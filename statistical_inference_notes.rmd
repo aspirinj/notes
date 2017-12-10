@@ -1,3 +1,14 @@
+---
+title: "Statistical Inference Notes"
+author: "Howard J, base on the work of Xing Su"
+date: "December 10, 2017"
+output:
+html_document:
+  highlight: pygments
+  theme: spacelab
+  toc: yes
+header-includes: \usepackage{graphicx}
+---
 
 ## Overview
 * **Statistical Inference** = generating conclusions about a population from a noisy sample
@@ -16,61 +27,43 @@
 
 ## Probability  
 __*Definition*__  
-Given a random experiment, a *probability measure* is a *population quantity* that summarizes the randomness.
-Notice that, it is not about the data we have, but a *conceptual quantity that exist in the population* that we want to estimate
+Given a random experiment, a __*probability measure* is a *population* quantity that summarizes the randomness__.
+Notice that, *it is not about the data we have, but a conceptual quantity that exist in the population* that we want to estimate
+
+## Random Variables
+* __Random variable__ is the numeric outcome of experiment.  
+* __Discrete__, assign probabilities to *every* number/value the variable can take.  
+* __Continuous__, assign probabilities to the *range* the variable can take.
+* Note: limitations of precision in taking the measurements may imply that the values are discrete, but we in fact consider them continuous
+  - Functions `rbinom()`, `rnorm()`, `rgamma()`, `rpois()`, `runif()` are used to generate Random Variables from the binomial, normal, Gamma, Poisson, and uniform distributions.  
+  - Density function and Mass function (population quantities, not what occurs in data) for random variables = best starting point to model/think about probabilities for numeric outcome of experiments (variables)
+  - use data to estimate properties of population $\rightarrow$ linking sample to population
+* __Mutually Exclusive__ (__Disjoint__) Events are events that cannot both happen at the same time: if $A$ and $B$ are mutually exclusive. $P(A\:\cap\:B)=0$
+* Distinguish between __Disjoint__ and __Independent__ events:  
+  - If $A$ and $B$ are independent, then having information on $A$ does not tell us anything about $B$ (and vice versa).
+  - If $A$ and $B$ are disjoint, then knowing that $A$ occurs tells us that $B$ cannot occur (and vice versa).
+  - *Disjoint (mutually exclusive) events are always dependent* since if one event occurs we know the other one cannot.
 
 ### General Probability Rules
-* discovered by Russian mathematician Kolmogorov, also known as "Probability Calculus"
-* probability = function of any set of outcomes and assigns it a number between 0 and 1
-    * $0 \le P(E) \le 1$, where $E$ = event
-* probability that nothing occurs = 0 (impossible, have to roll dice to create outcome), that something occurs is 1 (certain)
-* probability of outcome or event $E$, $P(E)$ = ratio of ways that $E$ could occur to number of all possible outcomes or events
-* probability of something = 1 - probability of the opposite occurring
-* probability of the **union** of any two sets of outcomes that have nothing in common (mutually exclusive) = sum of respective probabilities
-
-```{r echo = FALSE, fig.width = 4, fig.height = 3, fig.align = 'center'}
-library(grid);library(png)
-grid.raster(readPNG("figures/1.png"))
-```
-
-* if $A$ implies occurrence of $B$, then $P(A)$ occurring $< P(B)$ occurring
-
-```{r echo = FALSE, fig.width = 4, fig.height = 3, fig.align = 'center'}
-grid.raster(readPNG("figures/2.png"))
-```
-
-* for any two events, probability of at least one occurs = the sum of their probabilities - their intersection (in other words, probabilities can not be added simply if they have non-trivial intersection)
-
-```{r echo = FALSE, fig.width = 4, fig.height = 3, fig.align = 'center'}
-grid.raster(readPNG("figures/3.png"))
-```
-
-* for independent events $A$ and $B$, $P(A \:\cup\: B) = P(A) \times P(B)$
-* for outcomes that can occur with different combination of events and these combinations are mutually exclusive, the $P(E_{total}) =  \sum P(E_{part})$
-
+* Also known as "Probability Calculus"  
+* __*Probability* is a function of any set of outcomes and assigns it a number between 0 and 1__.  $0 \le P(E) \le 1$, where $E$ means __*Event*__.
+* A measure of certainty, 0 is impossible and 1 is certain.
+* The probability of an Event $E$ is shown as $P(E)$. The ratio of the number of times of $E$ occurring compared to the number of all outcomes.
+* The union of independent events $A$ and $B$, $P(A \:\cup\: B) = P(A) \times P(B)$
 
 ### Conditional Probability
-* let B = an event so that $P(B) > 0$
-* **conditional probability** of an event A, given B is defined as the probability that BOTH A and B occurring divided by the probability of B occurring $$P(A\:|\:B) = \frac{P(A \:\cap\: B)}{P(B)}$$
-* if A and B are ***independent***, then $$P(A\:|\:B) = \frac{P(A)P(B)}{P(B)} = P(A)$$
-* ***example***
-	* for die roll, $A = \{1\}$, $B = \{1, 3, 5\}$, then $$P(1~|~Odd) = P(A\:|\:B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)}{P(B)} = \frac{1/6}{3/6} = \frac{1}{3}$$
+* The __Conditional probability__ of an event $A$ given that event $B$ has occurred:  
+$$P(A\:|\:B) = \frac{P(A \:\cap\: B)}{P(B)}$$
+* If $A$ and $B$ are unrelated, in other words __Independent__, then:  
+$$P(A\:|\:B) = \frac{P(A)P(B)}{P(B)} = P(A)$$
+* *Example:* for die roll, $A = \{1\}$, $B = \{1, 3, 5\}$. Given that we already know the die roll was an odd number, the conditional probability now is $1\over3$, because we have extra information.  
+$$P(A\:|\:B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)}{P(B)} = \frac{1/6}{3/6} = \frac{1}{3}$$
 
 ### Baye's Rule
 * definition $$P(B\:|\:A) = \frac{P(A\:|\:B)P(B)}{P(A\:|\:B)P(B)+P(A\:|\:B^c)P(B^c)}$$ where $B^c$ = corresponding probability of event $B$, $P(B^c) = 1 - P(B)$
 
-$\pagebreak$
 
-## Random Variables
-* **random variable** = numeric outcome of experiment
-* **discrete** (what you can count/categories) = assign probabilities to every number/value the variable can take
-	* coin flip, rolling a die, web traffic in a day
-* **continuous** (any number within a continuum) = assign probabilities to the range the variable can take
-	* BMI index, intelligence quotients
-	* ***Note**: limitations of precision in taking the measurements may imply that the values are discrete, but we in fact consider them continuous *
-+ `rbinom()`, `rnorm()`, `rgamma()`, `rpois()`, `runif()` = functions to generate random variables from the binomial, normal, Gamma, Poisson, and uniform distributions
-* density and mass functions (population quantities, not what occurs in data) for random variables = best starting point to model/think about probabilities for numeric outcome of experiments (variables)
-	* use data to estimate properties of population $\rightarrow$ linking sample to population
+
 
 ### Probability Mass Function (PMF)
 * evaluates the probability that the **discrete random variable** takes on a specific value
@@ -154,7 +147,7 @@ grid.raster(readPNG("figures/5.png"))
 	* **identically distributed** = all having been drawn from the same population distribution
 * IID random variables = default model for random samples = default starting point of inference
 
-$\pagebreak$
+
 
 ## Diagnostic Test
 * Let $+$ and $-$ be the results, positive and negative respectively, of a diagnostic test
@@ -195,7 +188,7 @@ $$P(D^c\:|\:+) = \frac{P(+\:|\:D^c)P(D^c)}{P(+\:|\:D)P(D)+P(+\:|\:D^c)P(D^c)}~~~
 
 
 
-$\pagebreak$
+
 
 ## Expected Values/Mean
 * useful for characterizing a distribution (properties of distributions)
@@ -250,7 +243,7 @@ E\left[\frac{X_1 + X_2 + X_3 + ... + X_n}{n}\right] & = \frac{1}{n} \times [E(X_
 & = \frac{1}{n} \times n \times \mu\\
 & = \mu\\
 \end{aligned}$$
-* ***Note**: the more data that goes into the sample mean, the more concentrated its density/mass functions are around the population mean *
+* **Note**: the more data that goes into the sample mean, the more concentrated its density/mass functions are around the population mean *
 
 ```{r fig.width = 6, fig.height = 3, fig.align = 'center', message = F, warning = F}
 nosim <- 1000
@@ -267,7 +260,7 @@ g + facet_grid(. ~ size)
 ```
 
 
-$\pagebreak$
+
 
 ## Variance
 
@@ -444,7 +437,7 @@ round(c(sampleVar = var(x),
 
 
 
-$\pagebreak$
+
 
 ## Binomial Distribution
 * **binomial random variable** = sum of **n** Bernoulli variables $$X = \sum_{i=1}^n X_i$$ where $X_1,\ldots,X_n = Bernoulli(p)$
@@ -475,7 +468,7 @@ pbinom(6, size = 8, prob = .5, lower.tail = FALSE)
 	- `lower.tail=FALSE` = returns the complement, in this case it's the probability of greater than 6 successes out of 8 samples with probability of 0.5
 
 
-$\pagebreak$
+
 
 ## Normal Distribution
 * normal/Gaussian distribution for random variable X
@@ -531,7 +524,7 @@ qnorm(0.75, mean = 1020, sd = 50)
 * therefore, `r qnorm(0.75, mean = 1020, sd = 50)` would represent the threshold that has more clicks than 75% of days
 
 
-$\pagebreak$
+
 
 ## Poisson Distribution
 * used to model counts
@@ -575,7 +568,7 @@ ppois(2, lambda=500 * .01)
 
 * as we can see from above, the two probabilities (`r pbinom(2, size = 500, prob = .01)*100`% vs `r pbinom(2, size = 500, prob = .01)*100`%) are extremely close
 
-$\pagebreak$
+
 
 ## Asymptotics
 * **asymptotics** = behavior of statistics as sample size $\rightarrow$ $\infty$
@@ -969,7 +962,7 @@ t.test(g2, g1, paired = TRUE)
             * ***I(object)*** = prepend the class "AsIs" to the object
             * ***Note**: I(relevel(group, 2)) = explanatory variable, must be **factor** and have **two levels** *
 
-$\pagebreak$
+
 
 ## Hypothesis Testing
 * Hypothesis testing = making decisions using data
@@ -1068,7 +1061,7 @@ $H_a$ | $H_0$ | Type II error |
             * `r` = events that should occur given the rate (multiplied by 100 to yield an integer)
             * ***Note**: `lower.tail = FALSE` = strictly greater *
 
-$\pagebreak$
+
 
 ## Power
 * **Power** = probability of rejecting the null hypothesis when it is false (the more power the better)
@@ -1144,7 +1137,7 @@ g
         * `power.t.test(power = 0.8, delta = 0.5, sd = 1, type = "one.sample", alt = "one.sided")$n` = calculates size n with inputs of power, difference in means, and standard deviation
             * ***Note**: n should always be rounded up (ceiling) *
 
-$\pagebreak$
+
 
 ## Multiple Testing
 * Hypothesis testing/significant analysis commonly overused
@@ -1230,7 +1223,7 @@ table(p.adjust(pValues,method="BH") < 0.05,trueStatus)
 ```
 
 
-$\pagebreak$
+
 
 ## Resample Inference
 * **Bootstrap** = useful tool for constructing confidence intervals and caclulating standard errors for difficult statistics
