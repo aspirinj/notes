@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Intro  
-__Regression Analysis__ is a broad term fora set of methodologies used to predict a *Response Variable* (also called a *dependent*,*criterion*, or *outcome* variable) from one or more *Predictor Variables* (also called *independentor*, *explanatory* variables). In general, regression analysis can be used to identifythe explanatory variables that are related to a response variable, to describe the form of the relationships involved, and to provide an equation for predicting the response variable from the explanatory variables. 
-* *Example:* an exercise physiologist might use regression analysis to develop an equation for predicting the expected number of calories a person will burn while exercising on a treadmill. The response variable is the number of calories burned (calculated from the amount of oxygen consumed), and the predictor variables might include duration of exercise (minutes), percentage of time spent at their target heart rate, average speed (mph), age (years), gender, and body massindex (BMI).
+__Regression Analysis__ is a broad term fora set of methodologies used to predict a *Response Variable* (also called a *dependent*,*criterion*, or *outcome* variable) from one or more *Predictor Variables* (also called *independentor*, *explanatory* variables). In general, regression analysis can be used to identifythe explanatory variables that are related to a response variable, to describe the form of the relationships involved, and to provide an equation for predicting the response variable from the explanatory variables.  
+
+*Example:* an exercise physiologist might use regression analysis to develop an equation for predicting the expected number of calories a person will burn while exercising on a treadmill. The response variable is the number of calories burned (calculated from the amount of oxygen consumed), and the predictor variables might include duration of exercise (minutes), percentage of time spent at their target heart rate, average speed (mph), age (years), gender, and body massindex (BMI).
 
 

@@ -1,0 +1,86 @@
+
+
+## Discrete Probability Distribution  
+### Binomial Distribution  
+**Bernoulli and Binomial Random Variables**
+Suppose that a trial, or an experiment, whose outcome can be classified as either a success or a failure is performed. If we let $X = 1$ when the outcome is a $success$ and $X = 0$ when it is a $failure$, then the PMF of $X$ is given by:  
+$$p(0) = P\{X = 0\} = 1 - p$$  
+$$p(1) = P\{X = 1\} = p$$  
+
+where $p$, $0 \le p \le 1$, is the probability that the trial is a *success*.  
+
+A random variable X is said to be a **Bernoulli random variable** if its PMF is given by the equations above for some $p \in (0, 1)$.
+
+Suppose now that $n$ independent trials, each of which results *in a success with probability $p$* and *in a failure with probability $1 − p$*, are to be performed. *If $X$ represents the number of successes that occur in the $n$ trials, then $X$ is said to be a **Binomial random variable** with parameters $(n, p)$*. Thus, *a Bernoulli random variable is just a binomial random variable with parameters (1, p)*.  
+
+The PMF of a binomial random variable having parameters (n, p) is given by:  
+$$p(x) = {n \choose x} p^x (1-p)^{(n-x)}$$  
+where $x=0,1,...,n$, notice that $x$ begins at 0. ${n \choose 0}$ is 1.
+
+
+The **Binomial Random Variables** are obtained as the sum of iid **Bernoulli trials**. So if a Bernoulli trial is the result of a coin flip, a binomial random variable is the total number of heads.
+
+To write it out as mathematics, let $X_1,\ldots, X_n$ be iid Bernoulli $(p)$, then $X = \sum_{i=1}^n X_i$ is a binomial random variable. We write out that $X \sim Binomial(n,p)$. The binomial PMF is
+
+$$
+P(X = x) =
+\left(
+\begin{array}{c}
+  n \\ x
+\end{array}
+\right)
+p^x(1 - p)^{n-x}
+$$
+
+where $x=0,\ldots, n$. Recall that the notation
+
+$$
+\left(
+  \begin{array}{c} n \\ x \end{array}
+\right) = \frac{n!}{x!(n-x)!}
+$$
+
+*Note:* $n \choose x$ counts the number of ways of selecting $x$ items out of $n$ *without replacement disregarding the order* of the items. 
+
+
+*Example:* Suppose a friend has 8 children, $7$ of which are girls and none are twins. If each gender has an independent $50%$ probability for each birth, what's the probability of getting $7$ or more girls out of $8$ births?
+
+```{r}
+choose(8, 7) * 0.5^8 + choose(8, 8) * 0.5^8
+```
+```{r}
+pbinom(6, size = 8, prob = 0.5, lower.tail = FALSE)
+```
+*Notice:* for `lower.tail` argument, if TRUE, probabilities are $P[X \le x]$, if FALSE, $P[X \gt x]$. 
+
+
+
+
+### The Normal Distribution
+In fact, the normal distribution only requires two numbers to characterize it. Specifically, a random variable is said to follow a **Normal Distribution** or **Gaussian Distribution** with *mea*n $\mu$ and *variance* $\sigma^2$ if the associated density is:  
+$$ (2\pi \sigma^2)^{-1/2}e^{-(x - \mu)^2/2\sigma^2}. $$  
+
+If $X$ is a random variable with this density, then $E[X] = \mu$ and $Var(X) = \sigma^2$, $X$ is denoted as a **Normal Random Variable**. We write as $X\sim N(\mu, \sigma^2)$. When $\mu = 0$ and $\sigma = 1$ the resulting distribution is called **Standard Normal Distribution**. **Standard normal Random Variable** are often labeled $Z$.
+
+If we know that the *population is normally distributed*, we can estimate about the population, by estimating the population mean and variance. (These two population quantities are estimated by the sample mean and the sample variance.)
+
+
+The most relevant probabilities are.
+1. Approximately 68\%, 95\% and 99\%  of the normal density lies within 1, 2 and 3 standard deviations from the mean, respectively.
+2. -1.28, -1.645, -1.96 and -2.33 are the $10^{th}$, $5^{th}$, $$2.5^{th}$ and $1^{st}$ percentiles of the standard normal distribution, respectively??
+3. By symmetry, 1.28, 1.645, 1.96 and 2.33 are the $90^{th}$, $$95^{th}$, $97.5^{th}$ and $99^{th}$ percentiles of the standard normal distribution, respectively??
+
+
+
+### Shifting and Scaling Normal Distribution    
+Since the normal distribution is characterized by only the *mean* and *variance*, which are a *shift* and a *scale*, we can transform normal random variables to be standard normals and vice versa. The normal distribution $X \sim N(\mu,\sigma^2)$ can be converted to standard normal distribution:  
+$$Z = \frac{X -\mu}{\sigma} \sim N(0, 1^2)$$  
+
+Therefore, normal distribution $X$ can be written as a standard normal times the scale and then plus the shift:    
+$$X = \mu + \sigma Z \sim N(\mu, \sigma^2)$$  
+
+Where $X$ is $X \sim N(\mu,\sigma^2)$.  
+
+We can use these facts to answer questions about non-standard normals by relating them back to the standard normal.  
+
+
