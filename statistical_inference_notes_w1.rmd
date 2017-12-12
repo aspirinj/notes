@@ -1,6 +1,6 @@
 ---
 title: "Statistical Inference Notes"
-author: "Howard J, base on the work of Xing Su"
+author: "Howard J"
 date: "December 10, 2017"
 output:
 html_document:
@@ -9,6 +9,13 @@ html_document:
   toc: yes
 header-includes: \usepackage{graphicx}
 ---
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+library(grid)
+library(png)
+```
 
 ## Overview
 * **Statistical Inference** = generating conclusions about a population from a noisy sample
@@ -26,41 +33,39 @@ header-includes: \usepackage{graphicx}
 
 
 ## Probability  
-__*Definition*__  
-Given a random experiment, a __*probability measure* is a *population* quantity that summarizes the randomness__.
+__Randomnes__ is any process occurring without *apparent* deterministic patterns.  
+*Example:* We will treat many things as if they were random when, in fact they are completely deterministic. In my field, biostatistics, we often model disease outcomes as if they were random when they are the result of many mechanistic
+components whose aggregate behavior appears random.  
+
+__Probability__ of an event is in terms of its *relative frequency*.  
+We suppose that an experiment, whose sample space is $S$, is repeatedly performed under exactly the same conditions. For each event $E$ of the sample space $S$, we define $n(E)$ to be the number of times in the first $n$ repetitions of the experiment that the event $E$ occurs. Then $P(E)$, the probability of the event $E$, is defined as:  
+$$P(E)=\lim_{n\rightarrow\infty}{n(E) \over n}$$
+
+Given a random experiment, a *__probability measure__ is a __population__ quantity that summarizes the randomness*.
 Notice that, *it is not about the data we have, but a conceptual quantity that exist in the population* that we want to estimate
 
 ## Random Variables
-* __Random variable__ is the numeric outcome of experiment.  
-* __Discrete__, assign probabilities to *every* number/value the variable can take.  
-* __Continuous__, assign probabilities to the *range* the variable can take.
-* Note: limitations of precision in taking the measurements may imply that the values are discrete, but we in fact consider them continuous
-  - Functions `rbinom()`, `rnorm()`, `rgamma()`, `rpois()`, `runif()` are used to generate Random Variables from the binomial, normal, Gamma, Poisson, and uniform distributions.  
-  - Density function and Mass function (population quantities, not what occurs in data) for random variables = best starting point to model/think about probabilities for numeric outcome of experiments (variables)
-  - use data to estimate properties of population $\rightarrow$ linking sample to population
-* __Mutually Exclusive__ (__Disjoint__) Events are events that cannot both happen at the same time: if $A$ and $B$ are mutually exclusive. $P(A\:\cap\:B)=0$
-* Distinguish between __Disjoint__ and __Independent__ events:  
-  - If $A$ and $B$ are independent, then having information on $A$ does not tell us anything about $B$ (and vice versa).
-  - If $A$ and $B$ are disjoint, then knowing that $A$ occurs tells us that $B$ cannot occur (and vice versa).
-  - *Disjoint (mutually exclusive) events are always dependent* since if one event occurs we know the other one cannot.
+__Random variable__ is the numeric outcome of experiment.  
+__Discrete__, assign probabilities to *every* number/value the variable can take.  
+__Continuous__, assign probabilities to the *range* the variable can take.  
+*Note:* limitations of precision in taking the measurements may imply that the values are discrete, but we in fact consider them continuous.  
+* Density function and Mass function (population quantities, not what occurs in data) for random variables = best starting point to model/think about probabilities for numeric outcome of experiments (variables)
+* use data to estimate properties of population $\rightarrow$ linking sample to population  
 
-### General Probability Rules
-* Also known as "Probability Calculus"  
+
+### Probability Calculus    
 * __*Probability* is a function of any set of outcomes and assigns it a number between 0 and 1__.  $0 \le P(E) \le 1$, where $E$ means __*Event*__.
-* A measure of certainty, 0 is impossible and 1 is certain.
+* *A measure of certainty*, 0 is impossible and 1 is certain.
 * The probability of an Event $E$ is shown as $P(E)$. The ratio of the number of times of $E$ occurring compared to the number of all outcomes.
-* The union of independent events $A$ and $B$, $P(A \:\cup\: B) = P(A) \times P(B)$
+* The union of independent events $A$ and $B$, $P(A  \cup  B) = P(A) \times P(B)$
 
-### Conditional Probability
-* The __Conditional probability__ of an event $A$ given that event $B$ has occurred:  
-$$P(A\:|\:B) = \frac{P(A \:\cap\: B)}{P(B)}$$
-* If $A$ and $B$ are unrelated, in other words __Independent__, then:  
-$$P(A\:|\:B) = \frac{P(A)P(B)}{P(B)} = P(A)$$
-* *Example:* for die roll, $A = \{1\}$, $B = \{1, 3, 5\}$. Given that we already know the die roll was an odd number, the conditional probability now is $1\over3$, because we have extra information.  
-$$P(A\:|\:B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)}{P(B)} = \frac{1/6}{3/6} = \frac{1}{3}$$
 
-### Baye's Rule
-* definition $$P(B\:|\:A) = \frac{P(A\:|\:B)P(B)}{P(A\:|\:B)P(B)+P(A\:|\:B^c)P(B^c)}$$ where $B^c$ = corresponding probability of event $B$, $P(B^c) = 1 - P(B)$
+### Kolmogorov’s Three Rules
+Given a random experiment (say rolling a die) a probability measure is a *population quantity* that summarizes the randomness.  
+Consider an experiment with a random outcome. Probability takes a possible outcome from an experiment and:  
+1. $0 \le P(E) \le 1$
+2. $P(S)=1$  
+3. $P(\cup_{i=1}^\infty E) = \sum_{i=1}^\infty P(E)$, required that the probability of the union of any two sets of outcomes that have nothing in common (mutually exclusive) is the sum of their respective probabilities
 
 
 ### Distribution  
@@ -105,18 +110,13 @@ Four functions are provided by R:
 `prob` is the probability of success of each trial, e.g. the probability for head of each trial.  
 
 __*dbinom*__  
+`dbinom` returns binomial probabilities. The returned value is PMF values at the input vector of integers.  
 ```{r dbinom}
 # Create a sample of 50 numbers which are incremented by 1.
 x <- seq(0,50,by = 1)
 # Create the binomial distribution.
 y <- dbinom(x,50,0.5)
-
-# Give the chart file a name.
-png(file = "dbinom.png")
-# Plot the graph for this sample.
 plot(x,y)
-# Save the file.
-dev.off()
 ```
 
 __*pbinom*__  
@@ -130,7 +130,7 @@ print(x)
 *Example:* the cumulative probability distribution for the previous example.  
 ```{r pbinom2}
 x <- seq(0,50,by = 1)
-y <- dbinom(x,50,0.5)
+y <- pbinom(x,50,0.5)
 plot(x,y)
 ```
 
@@ -141,11 +141,10 @@ __*qbinom*__
 ```{r qbinom}
 x <- qbinom(0.25,51,1/2)
 print(x)
-
+```
 
 __*rbinom*__  
 `rbinom` generates required number of random values of given probability from a given sample.  
-
 *Example:* generate 8 random values (each value is the number of success, e.g. heads) from a sample of 150 with probability of 0.4:  
 ```{r rbinom}
 x <- rbinom(8,150,.4)
@@ -156,15 +155,14 @@ print(x)
 
 ### PMF (Probability Mass Function)  
 * A __PMF__ evaluates the probability that the __Discrete Random Variable__ takes on a specific value.  
-	- It measures the chance of a particular outcome happening
-  - It must always be $\ge$ 0 for every possible outcome.
-  - The sum of the possible values that the random variable can take has to add up to one.
+* Always be $\ge$ 0 for every possible outcome.
+* The sum of the possible values that the random variable can take has to add up to one.
 
 * *Bernoulli Distribution example:* Let $X$ be the result of a coin flip.  
   - $X = 0 \rightarrow tails$, $X = 1 \rightarrow heads$  
   - $P(X = x) = (\frac{1}{2})^x(\frac{1}{2})^{1-x}$ for $X = 0, 1$, where $x$ here represents a value we can plug into the PMF.  
   - A general form is $p(x) = (\theta)^x(1-\theta)^{1-x}$.  
-* `dbinom(k, n, p)` = return the probability of getting `k` successes out of `n` trials, given probability of success is `p`.
+*Example:* `dbinom(x, size, prob)` = return the probability of getting `x` successes out of `size` trials, given probability of success is `prob`.
 
 
 
@@ -189,23 +187,11 @@ pbeta(0.75, 2, 1)
 ```
 
 
-```{r echo = FALSE, fig.width = 2, fig.height = 2, fig.align = 'center'}
-grid.raster(readPNG("figures/4-1.png"))
-```
-
-
-* but the probability of the variable taking a specific value = 0 (area of a line is 0)
-
-```{r echo = FALSE, fig.width = 3, fig.height = 3, fig.align = 'center'}
-grid.raster(readPNG("figures/4-2.png"))
-```
-* ***Note**: the above is true because it is modeling random variables as if they have infinite precision, when in reality they do not *
-
-* `dnorm()`, `dgamma()`, `dpois()`, `dunif()` = return probability of a certain value from the normal, Gamma, Poisson, and uniform distributions
-
-### Cumulative Distribution Function (CDF)
-* CDF of a random variable $X$ = probability that the random variable is $\le$ value $x$
-	* $F(x) = P(X \le x)$ = applies when $X$ is discrete/continuous
+### Cumulative Distribution Function (CDF)  
+* The __CDF__ of a Random Variable, $X$, returns the probability that the random variable is less than or equal to the value $x$. The distribution function $F$:
+$$F(x) = P(X \le x)$$   
+*This definition applies regardless of whether the random variable is discrete or continuous.*  
+* *Notice* the convention that we use an upper case $X$ to denote an unrealized random variable and a lowercase $x$ to denote a specific number that we plug into.  
 * PDF = derivative of CDF
 	* integrate PDF $\rightarrow$ CDF
 		* `integrate(function, lower=0, upper=1)` $\rightarrow$ can be used to evaluate integrals for a specified range
@@ -213,8 +199,14 @@ grid.raster(readPNG("figures/4-2.png"))
 
 
 ### Survival Function
-* survival function of a random variable $X$ = probability the random variable $> x$, complement of CDF
-    * $S(x) = P(X > x) = 1 - F(x)$, where $F(x) =$ CDF
+* The __Survival Function__ of a random variable $X$ is defined as the probability the random variable is greater than the value $x$. It is the complement of CDF.
+$$S(x) = P(X > x) = 1 - F(x)$$
+where $F(x) = CDF$.  
+* *Example:* What are the survival function and CDF from the density considered before?
+$$S(x) = 1 - F(x) = 1 - x^2$$
+```{r}
+1 - pbeta(c(0.4, 0.5, 0.6), 2, 1)
+```
 
 
 ### Quantile
@@ -234,18 +226,40 @@ grid.raster(readPNG("figures/5.png"))
 * probability model connects data to population using assumptions
 	* population median = ***estimand***, sample median = ***estimator***
 
-### Independence
-* two events $A$ and $B$ are ***independent*** if the following is true
-	* $P(A\:\cap\:B) = P(A)P(B)$
-	* $P(A\:|\:B) = P(A)$
-* two random variables $X$ and $Y$ are ***independent***, if for any two sets, **A** and **B**, the following is true
-	* $P([X \in A]\cap[Y \in B]) = P(X \in A)P(Y \in B)$
-* **independence** = statistically unrelated from one another
-* if $A$ is ***independent*** of $B$, then the following are true
-	* $A^c$ is independent of $B$
-	* $A$ is independent of $B^c$
-	* $A^c$ is independent of $B^c$
 
+
+
+
+  ### Conditional Probability  
+This is the idea of conditioning, *taking away the randomness* that we know to have occurred.  
+The __Conditional probability__ of an event $A$ given that event $B$ has occurred:  
+$$P(A | B) = \frac{P(A  \cap  B)}{P(B)}$$
+If $A$ and $B$ are *unrelated*, in other words __Independent__, then:  
+$$P(A | B) = \frac{P(A)P(B)}{P(B)} = P(A)$$
+  * *Example:* for die roll, $A = \{1\}$, $B = \{1, 3, 5\}$. Given that we already know the die roll was an odd number, the conditional probability now is $1\over3$, because we have extra information.  
+  $$P(A | B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)}{P(B)} = \frac{1/6}{3/6} = \frac{1}{3}$$
+
+  ### Baye's Rule
+  * definition $$P(B | A) = \frac{P(A | B)P(B)}{P(A | B)P(B)+P(A | B^c)P(B^c)}$$ where $B^c$ = corresponding probability of event $B$, $P(B^c) = 1 - P(B)$
+
+
+
+
+### Independence
+Two events $A$ and $B$ are __Independent__ if the following is true  
+$$P(A \cap B) = P(A)P(B)$$  
+Or equivalently by using the definition of conditional probability:  
+$$P(A | B) = P(A)$$  
+*While this definition works for __sets__, remember that __random variables__ are really the things that we are interested in.* Two random variables $X$ and $Y$ are independent, if for any two sets, $A$ and $B$:  
+$$P([X \in A]\cap[Y \in B]) = P(X \in A)P(Y \in B)$$  
+
+
+__Mutually Exclusive__ (__Disjoint__) Events are events that cannot both happen at the same time: if $A$ and $B$ are mutually exclusive. $P(A \cap B)=0$  
+  Distinguish between __Disjoint__ and __Independent__ events:  
+  * If $A$ and $B$ are independent, then having information on $A$ does not tell us anything about $B$ (and vice versa).
+  * If $A$ and $B$ are disjoint, then knowing that $A$ occurs tells us that $B$ cannot occur (and vice versa).
+  * *Disjoint (mutually exclusive) events are always dependent* since if one event occurs we know the other one cannot.
+  *
 
 ### IID Random Variables
 * random variables are said to be **IID** if they are ***independent and identically distributed***
@@ -258,10 +272,10 @@ grid.raster(readPNG("figures/5.png"))
 ## Diagnostic Test
 * Let $+$ and $-$ be the results, positive and negative respectively, of a diagnostic test
 * Let $D$ = subject of the test has the disease, $D^c$ = subject does not
-* **sensitivity** = $P(+\:|\:D)$ = probability that the test is positive given that the subject has the disease (the higher the better)
-* **specificity** = $P(-\:|\:D^c)$ = probability that the test is negative given that the subject does not have the disease (the higher the better)
-* **positive predictive value** = $P(D\:|\:+)$ = probability that that subject has the disease given that the test is positive
-* **negative predictive value** = $P(D^c\:|\:-)$ = probability that the subject does not have the disease given the test is negative
+* **sensitivity** = $P(+ | D)$ = probability that the test is positive given that the subject has the disease (the higher the better)
+* **specificity** = $P(- | D^c)$ = probability that the test is negative given that the subject does not have the disease (the higher the better)
+* **positive predictive value** = $P(D | +)$ = probability that that subject has the disease given that the test is positive
+* **negative predictive value** = $P(D^c | -)$ = probability that the subject does not have the disease given the test is negative
 * **prevalence of disease** = $P(D)$ = marginal probability of disease
 
 ### Example
@@ -278,15 +292,15 @@ P(D ~|~ +) & = \frac{P(+~|~D)P(D)}{P(+~|~D)P(D) + P(+~|~D^c)P(D^c)}\\
 
 
 ### Likelihood Ratios
-* **diagnostic likelihood ratio** of a **positive** test result is defined as $$DLR_+ = \frac{sensitivity}{1-specificity} =  \frac{P(+\:|\:D)}{P(+\:|\:D^c)}$$
-* **diagnostic likelihood ratio** of a **negative** test result is defined as $$DLR_- = \frac{1 - sensitivity}{specificity} =  \frac{P(-\:|\:D)}{P(-\:|\:D^c)}$$
+* **diagnostic likelihood ratio** of a **positive** test result is defined as $$DLR_+ = \frac{sensitivity}{1-specificity} =  \frac{P(+ | D)}{P(+ | D^c)}$$
+* **diagnostic likelihood ratio** of a **negative** test result is defined as $$DLR_- = \frac{1 - sensitivity}{specificity} =  \frac{P(- | D)}{P(- | D^c)}$$
 * from Baye's Rules, we can derive the *positive predictive value* and *false positive value*
-$$P(D\:|\:+) = \frac{P(+\:|\:D)P(D)}{P(+\:|\:D)P(D)+P(+\:|\:D^c)P(D^c)}~~~~~~\mbox{(1)}$$
-$$P(D^c\:|\:+) = \frac{P(+\:|\:D^c)P(D^c)}{P(+\:|\:D)P(D)+P(+\:|\:D^c)P(D^c)}~~~~~~\mbox{(2)}$$
-* if we divide equation $(1)$ over $(2)$, the quantities over have the same denominator so we get the following $$\frac{P(D\:|\:+)}{P(D^c\:|\:+)} = \frac{P(+\:|\:D)}{P(+\:|\:D^c)} \times \frac{P(D)}{P(D^c)}$$ which can also be written as $$\mbox{post-test odds of D} = DLR_+ \times \mbox{pre-test odds of D}$$
+$$P(D | +) = \frac{P(+ | D)P(D)}{P(+ | D)P(D)+P(+ | D^c)P(D^c)}~~~~~~\mbox{(1)}$$
+$$P(D^c | +) = \frac{P(+ | D^c)P(D^c)}{P(+ | D)P(D)+P(+ | D^c)P(D^c)}~~~~~~\mbox{(2)}$$
+* if we divide equation $(1)$ over $(2)$, the quantities over have the same denominator so we get the following $$\frac{P(D | +)}{P(D^c | +)} = \frac{P(+ | D)}{P(+ | D^c)} \times \frac{P(D)}{P(D^c)}$$ which can also be written as $$\mbox{post-test odds of D} = DLR_+ \times \mbox{pre-test odds of D}$$
 	* **odds** = $p/(1-p)$
 	* $\frac{P(D)}{P(D^c)}$ = **pre-test odds**, or odds of disease in absence of test
-	* $\frac{P(D\:|\:+)}{P(+\:|\:D^c)}$ = **post-test odds**, or odds of disease given a positive test result
+	* $\frac{P(D | +)}{P(+ | D^c)}$ = **post-test odds**, or odds of disease given a positive test result
 	* $DLR_+$ = factor by which the odds in the presence of a positive test can be multiplied to obtain the post-test odds
 	* $DLR_-$ = relates the decrease in odds of disease after a negative result
 * following the previous example, for sensitivity of 0.997 and specificity of 0.985, so the diagnostic likelihood ratios are as follows $$DLR_+ = .997/(1-.985) = 66 ~~~~~~ DLR_- =(1-.997)/.985 = 0.003$$
