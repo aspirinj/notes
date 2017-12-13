@@ -1,0 +1,103 @@
+---
+title: "Statistical Inference Notes"
+author: "Howard J"
+date: "December 10, 2017"
+output:
+html_document:
+  highlight: pygments
+  theme: spacelab
+  toc: yes
+header-includes: \usepackage{graphicx}
+---
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+library(grid)
+library(png)
+```
+
+
+## Expected Values
+__Expected Values__, including __Mean__, __Variance__, __Skewness__, etc. characterize a distribution.  
+__Mean__ characterizes of the center of a density or mass function.  
+__Variance__ characterizes how spread out the distribution is.  
+__Skewness__ considers how much a density is pulled toward high or low values.  
+*Note:* in this part we are discussing __Population__ quantities. Using sample analogs to estimate the associated population quantities.  
+
+
+__Population Mean__  
+The expected value or population mean of a random variable is the center of its distribution.  
+
+For Discrete random variables $X$ with PMF $p(x)$, the population mean is defined as:  
+$$
+E[X] = \sum_{x} xp(x)
+$$  
+where the sum is taken over all possible values of $x$. The idea is taken from the physical idea of the center of mass. Specifically, $E[X]$ represent the center of mass of a collection of locations and weights, $\{x,p(x)\}$. We can exploit this fact to quickly calculate population means for distributions where the center of mass is obvious.  
+
+
+__Sample Mean__  
+It is important to contrast the population mean (the estimand) with the sample mean (the estimator). The sample mean estimates the population mean. Not coincidentally, since the population mean is the center of mass of the population distribution, the sample mean is the center of mass of the data.  
+$$
+\bar X = \sum_{i=1}^n x_i p(x_i),
+$$  
+
+where $p(x_i) = 1/n$.
+
+*Example:* Galton's tabulated data used to study the relationship between a parent's height and their childrens. The data were tabulated and consequently made discrete.  
+
+```{r load galton}
+library(UsingR); data(galton); library(ggplot2)
+tail(galton)
+```
+
+```{r}
+library(UsingR); data(galton); library(ggplot2); library(reshape2)
+longGalton <- melt(galton, measure.vars = c("child", "parent"))
+g <- ggplot(longGalton, aes(x = value)) + geom_histogram(aes(y = ..density.., fill = variable), binwidth=1, color = "black") + geom_density(size = 2)
+g <- g + facet_grid(. ~ variable)
+g
+```
+
+
+```{r fig.width = 5, fig.height = 3, fig.align = 'center', message = F, warning = F}
+g <- ggplot(galton, aes(x = child))
+# add histogram for children data
+g <- g + geom_histogram(fill = "salmon", binwidth=1, aes(y=..density..), colour="black")
+# add density smooth
+g <- g + geom_density(size = 2)
+# add vertical line
+g <- g + geom_vline(xintercept = mean(galton$child), size = 2)
+# print graph
+g
+```
+
+
+* **average of random variables** = a new random variable where its distribution has an expected value that is the **same** as the original distribution (centers are the same)
+	* the mean of the averages = average of the original data $\rightarrow$ estimates average of the population
+	* if $E[sample~mean]$ = population mean, then estimator for the sample mean is **unbiased**
+		* [**derivation**] let $X_1$, $X_2$, $X_3$, ... $X_n$ be a collection of $n$ samples from the population with mean $\mu$
+		* mean of this sample $$\bar X = \frac{X_1 + X_2 + X_3 +  .  + X_n}{n}$$
+		* since $E(aX) = aE(X)$, the expected value of the mean is can be written as $$E\left[\frac{X_1 + X_2 + X_3 + ... + X_n}{n}\right] = \frac{1}{n} \times [E(X_1) + E(X_2) + E(X_3) + ... + E(X_n)]$$
+		* since each of the $E(X_i)$ is drawn from the population with mean $\mu$, the expected value of each sample should be $$E(X_i) = \mu$$
+		* therefore $$\begin{aligned}
+E\left[\frac{X_1 + X_2 + X_3 + ... + X_n}{n}\right] & = \frac{1}{n} \times [E(X_1) + E(X_2) + E(X_3) + ... + E(X_n)]\\
+& = \frac{1}{n} \times [\mu + \mu + \mu + ... + \mu]\\
+& = \frac{1}{n} \times n \times \mu\\
+& = \mu\\
+\end{aligned}$$
+* **Note**: the more data that goes into the sample mean, the more concentrated its density/mass functions are around the population mean *
+
+```{r fig.width = 6, fig.height = 3, fig.align = 'center', message = F, warning = F}
+nosim <- 1000
+# simulate data for sample size 1 to 4
+dat <- data.frame(
+	x = c(sample(1 : 6, nosim, replace = TRUE),
+        apply(matrix(sample(1 : 6, nosim * 2, replace = TRUE), nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 3, replace = TRUE), nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 4, replace = TRUE), nosim), 1, mean)),
+	size = factor(rep(1 : 4, rep(nosim, 4))))
+# plot histograms of means by sample size
+g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20, binwidth=.25, colour = "black")
+g + facet_grid(. ~ size)
+```

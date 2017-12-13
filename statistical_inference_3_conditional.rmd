@@ -1,0 +1,37 @@
+### Conditional Probability  
+This is the idea of conditioning, *taking away the randomness* that we know to have occurred.  
+The __Conditional probability__ of an event $A$ given that event $B$ has occurred:  
+$$P(A | B) = \frac{P(A  \cap  B)}{P(B)}$$
+If $A$ and $B$ are *unrelated*, in other words __Independent__, then:  
+$$P(A | B) = \frac{P(A)P(B)}{P(B)} = P(A)$$
+*Example:* for die roll, $A = \{1\}$, $B = \{1, 3, 5\}$. Given that we already know the die roll was an odd number, the conditional probability now is $1\over3$, because we have extra information.  
+  $$P(A | B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)}{P(B)} = \frac{1/6}{3/6} = \frac{1}{3}$$  
+*Notice:* in this example, $A$ is the subset of $B$.   
+
+
+### Baye's Rule  
+Bayes’ rule allows us to switch the conditioning event, provided with a little bit of extra information.  
+$$P(B | A) = \frac{P(A \cap B)}{P(A)} = \frac{P(A | B)P(B)}{P(A | B)P(B)+P(A | B^c)P(B^c)}$$  
+where $B^c$ = corresponding probability of event $B$, $P(B^c) = 1 - P(B)$
+
+
+
+### Independence
+Two events $A$ and $B$ are __Independent__ if the following is true  
+$$P(A \cap B) = P(A)P(B)$$  
+Or equivalently by using the definition of conditional probability:  
+$$P(A | B) = P(A)$$  
+*While this definition works for __sets__, remember that __random variables__ are really the things that we are interested in.* Two random variables $X$ and $Y$ are independent, if for any two sets, $A$ and $B$:  
+$$P([X \in A]\cap[Y \in B]) = P(X \in A)P(Y \in B)$$  
+
+
+__Mutually Exclusive__ (__Disjoint__) Events are events that cannot both happen at the same time: if $A$ and $B$ are mutually exclusive. $P(A \cap B)=0$  
+  Distinguish between __Disjoint__ and __Independent__ events:  
+  * If $A$ and $B$ are independent, then having information on $A$ does not tell us anything about $B$ (and vice versa).
+  * If $A$ and $B$ are disjoint, then knowing that $A$ occurs tells us that $B$ cannot occur (and vice versa).
+  * *Disjoint (mutually exclusive) events are always dependent* since if one event occurs we know the other one cannot.
+
+
+### IID Random Variables
+Random variables are said to be independent and identically distributed ($iid$) if they are independent and all are drawn from the same population. $iid$ is a model for the random sampling process.  
+Consider that in some study designs, such as in election polling, great pains are made to make sure that the sample is randomly drawn from a population of interest. The idea is to expend a lot of effort on design to get robust inferences.  

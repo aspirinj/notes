@@ -1,0 +1,134 @@
+---
+title: "Statistical Inference Notes"
+author: "Howard J"
+date: "December 10, 2017"
+output:
+html_document:
+  highlight: pygments
+  theme: spacelab
+  toc: yes
+header-includes: \usepackage{graphicx}
+---
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+library(grid)
+library(png)
+```
+
+## Probability  
+__Randomnes__ is any process occurring without *apparent* deterministic patterns.  
+*Example:* We will treat many things as if they were random when, in fact they are completely deterministic. In my field, biostatistics, we often model disease outcomes as if they were random when they are the result of many mechanistic
+components whose aggregate behavior appears random.  
+
+__Probability__ of an event is in terms of its *relative frequency*.  
+We suppose that an experiment, whose sample space is $S$, is repeatedly performed under exactly the same conditions. For each event $E$ of the sample space $S$, we define $n(E)$ to be the number of times in the first $n$ repetitions of the experiment that the event $E$ occurs. Then $P(E)$, the probability of the event $E$, is defined as:  
+$$P(E)=\lim_{n\rightarrow\infty}{n(E) \over n}$$
+
+Given a random experiment, a *__probability measure__ is a __population__ quantity that summarizes the randomness*.
+Notice that, *it is not about the data we have, but a conceptual quantity that exist in the population* that we want to estimate
+
+## Random Variables
+__Random variable__ is the numeric outcome of experiment.  
+__Discrete__, assign probabilities to *every* number/value the variable can take.  
+__Continuous__, assign probabilities to the *range* the variable can take.  
+*Note:* limitations of precision in taking the measurements may imply that the values are discrete, but we in fact consider them continuous.  
+* Density function and Mass function (population quantities, not what occurs in data) for random variables = best starting point to model/think about probabilities for numeric outcome of experiments (variables)
+* use data to estimate properties of population $\rightarrow$ linking sample to population  
+
+
+### Probability Calculus    
+* __*Probability* is a function of any set of outcomes and assigns it a number between 0 and 1__.  $0 \le P(E) \le 1$, where $E$ means __*Event*__.
+* *A measure of certainty*, 0 is impossible and 1 is certain.
+* The probability of an Event $E$ is shown as $P(E)$. The ratio of the number of times of $E$ occurring compared to the number of all outcomes.
+* The union of independent events $A$ and $B$, $P(A  \cup  B) = P(A) \times P(B)$
+
+
+### Kolmogorov's Three Rules
+Given a random experiment (say rolling a die) a probability measure is a *population quantity* that summarizes the randomness.  
+Consider an experiment with a random outcome. Probability takes a possible outcome from an experiment and:  
+1. $0 \le P(E) \le 1$  
+2. $P(S)=1$  
+3. $P(\cup_{i=1}^\infty E) = \sum_{i=1}^\infty P(E)$, required that the probability of the union of any two sets of outcomes that have nothing in common (mutually exclusive) is the sum of their respective probabilities
+
+
+
+### PMF (Probability Mass Function)  
+* A __PMF__ evaluates the probability that the __Discrete Random Variable__ takes on a specific value.  
+* Always be $\ge$ 0 for every possible outcome.
+* The sum of the possible values that the random variable can take has to add up to one.
+
+* *Bernoulli Distribution example:* Let $X$ be the result of a coin flip.  
+  - $X = 0 \rightarrow tails$, $X = 1 \rightarrow heads$  
+  - $P(X = x) = (\frac{1}{2})^x(\frac{1}{2})^{1-x}$ for $X = 0, 1$, where $x$ here represents a value we can plug into the PMF.  
+  - A general form is $p(x) = (\theta)^x(1-\theta)^{1-x}$.  
+*Example:* `dbinom(x, size, prob)` = return the probability of getting `x` successes out of `size` trials, given probability of success is `prob`.
+
+
+
+### PDF (Probability Density Function)  
+The central dogma of __PDF__: Areas under PDFs correspond to probabilities for that random variable.  
+Two conditions to justify a mathematically valid density:  
+* Always great than or equal to 0 everywhere.  
+* Total area under the whole curve equal to 1.  
+
+*Example:* when one says that intelligence quotients (IQ) in population follows a bell curve, they are saying that the probability of a randomly selected person from this population having an IQ between two values is given by the area under the bell curve.  
+*Example:* suppose that the proportion of help calls that get addressed in a random day by a help line is given by $f(x) = 2x$ for $0 < x < 1$. What is the probability that 75% or fewer of calls get addressed?
+* The probability is the area: ${1.5 \times 0.75 \over 2} = 0.5625$  
+
+```{r}
+x <- c(-0.5, 0, 1, 1, 1.5)
+y <- c(0, 0, 2, 0, 0)
+plot(x, y, lwd = 3,frame = FALSE, type = "l")
+```
+
+This special density is the beta density:  
+```{r}
+pbeta(0.75, 2, 1)
+```
+
+
+### Cumulative Distribution Function (CDF)  
+The __CDF__ of a Random Variable, $X$, returns the probability that the random variable is less than or equal to the value $x$. The distribution function $F$:  
+$$F(x) = P(X \le x)$$   
+*Notice:* This definition applies regardless of whether the random variable is discrete or continuous. For continuous, PDF is the derivative of CDF, and the integration PDF is CDF.      
+*Notice:* the convention that we use an upper case $X$ to denote an unrealized random variable and a lowercase $x$ to denote a specific number that we plug into.  
+ 
+Function `integrate(fun, lower, upper)` can be used to evaluate integrals for a specified range. 
+
+
+
+### Survival Function
+The __Survival Function__ of a random variable $X$ is defined as the probability the random variable is greater than the value $x$. It is the complement of CDF.  
+$$S(x) = P(X > x) = 1 - F(x)$$
+where $F(x) = CDF$.  
+*Example:* What are the survival function and CDF from the density considered before?  
+$$S(x) = 1 - F(x) = 1 - x^2$$  
+Calculation of the survival function, or more than 40%, 50% and 60% of calls answered.      
+```{r}
+1 - pbeta(c(0.4, 0.5, 0.6), 2, 1)
+```
+
+
+### Quantile  
+The calcualtion of quantile is based on CDF. For a population, the $\alpha^{th}$ quantile of a distribution with distribution function $F$ is the point $x_{\alpha}$ so that:  
+$$F(x_{\alpha}) = \alpha$$  
+
+A percentile is simply a quantile with $\alpha$ expressed as a percent rather than a proportion. Percentiles are not probabilities.  
+*Example:* the population **Median** is $50^{th}$ percentile.
+
+*Example:* what is the median of the distribution that we were working with before?
+We want to solve $0.5 = F(x) = x^2$, where $\alpha=0.5$, and we need to find the corresponding $x_\alpha$ value.
+
+```{r}
+sqrt(0.5)
+qbeta(0.5, 2, 1)
+```
+
+Therefore, 0.7071 of calls being answered on a random day is the median, or 0.5 percentile. In other words, the probability that 70% or fewer calls get answered is 50%.
+
+
+
+
+
