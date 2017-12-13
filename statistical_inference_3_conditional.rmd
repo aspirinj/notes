@@ -1,3 +1,22 @@
+---
+title: "Statistical Inference Notes"
+author: "Howard J"
+date: "December 10, 2017"
+output:
+html_document:
+  highlight: pygments
+  theme: spacelab
+  toc: yes
+header-includes: \usepackage{graphicx}
+---
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+library(grid)
+library(png)
+```
+
 ### Conditional Probability  
 This is the idea of conditioning, *taking away the randomness* that we know to have occurred.  
 The __Conditional probability__ of an event $A$ given that event $B$ has occurred:  

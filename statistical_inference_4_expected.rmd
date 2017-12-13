@@ -15,6 +15,7 @@ library(UsingR)
 library(tidyverse)
 library(grid)
 library(png)
+library(manipulate)
 ```
 
 
@@ -26,7 +27,7 @@ __Skewness__ considers how much a density is pulled toward high or low values.
 *Note:* in this part we are discussing __Population__ quantities. Using sample analogs to estimate the associated population quantities.  
 
 
-__Population Mean__  
+### Population Mean   
 The expected value or population mean of a random variable is the center of its distribution.  
 
 For Discrete random variables $X$ with PMF $p(x)$, the population mean is defined as:  
@@ -36,7 +37,7 @@ $$
 where the sum is taken over all possible values of $x$. The idea is taken from the physical idea of the center of mass. Specifically, $E[X]$ represent the center of mass of a collection of locations and weights, $\{x,p(x)\}$. We can exploit this fact to quickly calculate population means for distributions where the center of mass is obvious.  
 
 
-__Sample Mean__  
+### Sample Mean   
 It is important to contrast the population mean (the estimand) with the sample mean (the estimator). The sample mean estimates the population mean. Not coincidentally, since the population mean is the center of mass of the population distribution, the sample mean is the center of mass of the data.  
 $$
 \bar X = \sum_{i=1}^n x_i p(x_i),
@@ -52,52 +53,82 @@ tail(galton)
 ```
 
 ```{r}
-library(UsingR); data(galton); library(ggplot2); library(reshape2)
-longGalton <- melt(galton, measure.vars = c("child", "parent"))
-g <- ggplot(longGalton, aes(x = value)) + geom_histogram(aes(y = ..density.., fill = variable), binwidth=1, color = "black") + geom_density(size = 2)
-g <- g + facet_grid(. ~ variable)
+longGalton <- gather(galton, key = person_attr, value = measurement, child, parent)
+g <- ggplot(longGalton, aes(x = measurement)) + 
+  geom_histogram(aes(y = ..density.., fill = person_attr), binwidth=1, color = "black") + 
+  geom_density(size = 2) +
+  facet_grid(. ~ person_attr)
 g
 ```
 
 
-```{r fig.width = 5, fig.height = 3, fig.align = 'center', message = F, warning = F}
-g <- ggplot(galton, aes(x = child))
-# add histogram for children data
-g <- g + geom_histogram(fill = "salmon", binwidth=1, aes(y=..density..), colour="black")
-# add density smooth
-g <- g + geom_density(size = 2)
-# add vertical line
-g <- g + geom_vline(xintercept = mean(galton$child), size = 2)
-# print graph
-g
+*Example:* Suppose that a die is rolled and $X$ is the number face up. What is the expected value of $X$?  
+```{r, fig.align='center', echo=FALSE, fig.height=4, fig.width=10}
+ggplot(data.frame(x = factor(1 : 6), y = rep(1/6, 6)), aes(x = x, y = y)) + geom_bar(stat = "identity", colour = 'black', fill = "lightblue")
 ```
 
 
-* **average of random variables** = a new random variable where its distribution has an expected value that is the **same** as the original distribution (centers are the same)
-	* the mean of the averages = average of the original data $\rightarrow$ estimates average of the population
-	* if $E[sample~mean]$ = population mean, then estimator for the sample mean is **unbiased**
-		* [**derivation**] let $X_1$, $X_2$, $X_3$, ... $X_n$ be a collection of $n$ samples from the population with mean $\mu$
-		* mean of this sample $$\bar X = \frac{X_1 + X_2 + X_3 +  .  + X_n}{n}$$
-		* since $E(aX) = aE(X)$, the expected value of the mean is can be written as $$E\left[\frac{X_1 + X_2 + X_3 + ... + X_n}{n}\right] = \frac{1}{n} \times [E(X_1) + E(X_2) + E(X_3) + ... + E(X_n)]$$
-		* since each of the $E(X_i)$ is drawn from the population with mean $\mu$, the expected value of each sample should be $$E(X_i) = \mu$$
-		* therefore $$\begin{aligned}
-E\left[\frac{X_1 + X_2 + X_3 + ... + X_n}{n}\right] & = \frac{1}{n} \times [E(X_1) + E(X_2) + E(X_3) + ... + E(X_n)]\\
-& = \frac{1}{n} \times [\mu + \mu + \mu + ... + \mu]\\
-& = \frac{1}{n} \times n \times \mu\\
-& = \mu\\
-\end{aligned}$$
-* **Note**: the more data that goes into the sample mean, the more concentrated its density/mass functions are around the population mean *
+### Facts about expected values  
+Recall that expected values are properties of *population* distributions. The expected value, or *mean*, height is *the center of the population density* of heights.  
 
-```{r fig.width = 6, fig.height = 3, fig.align = 'center', message = F, warning = F}
-nosim <- 1000
-# simulate data for sample size 1 to 4
-dat <- data.frame(
-	x = c(sample(1 : 6, nosim, replace = TRUE),
-        apply(matrix(sample(1 : 6, nosim * 2, replace = TRUE), nosim), 1, mean),
-        apply(matrix(sample(1 : 6, nosim * 3, replace = TRUE), nosim), 1, mean),
-        apply(matrix(sample(1 : 6, nosim * 4, replace = TRUE), nosim), 1, mean)),
-	size = factor(rep(1 : 4, rep(nosim, 4))))
-# plot histograms of means by sample size
-g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20, binwidth=.25, colour = "black")
-g + facet_grid(. ~ size)
+The average of ten randomly sampled people's height is itself a random variable. What does the distribution of averages look like?.  
+
+Consider the die rolls again. If wanted to know the distribution of averages of 100 die rolls, you could (at least in principle) roll 100 dice, take the average and repeat that process. Imagine, if you could only roll the 100 dice once. Then we would have direct information about the distribution of die rolls (since we have 100 of them), but we wouldn't have any direct information about the distribution of the average of 100 die rolls, since we only observed one average.  
+
+Fortunately, the mathematics tells us about that distribution. *The distribution of the estimator (the sample mean) is centered at the distribution of what it's estimating (the population mean)*. When the expected value of an estimator is what its trying to estimate, we say that the estimator is *unbiased*.  
+
+
+### Simulation experiments  
+__Standard normals__   
+Consider simulating lots of *standard normals* and plotting a histogram (the blue density). Now consider simulating lots of *averages of 10 standard normals* and plotting their histogram (the salmon colored density). Notice that both of them are centered in the same spot. The simulation of average of multiple random variables more concentrated around that point.  
+
+Simulating normals with $mean=0$ and $var=1$ versus averages of 10 normals from the same population.  
+```{r, fig.height=6, figh.width=6, fig.align='center', echo = FALSE}
+sim_count <- 10000; sample_size <- 10
+df <- data.frame(
+    sim_val = c(rnorm(sim_count), apply(matrix(rnorm(sim_count * sample_size), sim_count), 1, mean)),
+    type = factor(rep(c("Obs", "Mean"), c(sim_count, sim_count))) 
+    )
+ggplot(df, aes(x = sim_val, fill = type)) + 
+  geom_density(size = 2, alpha = .2); 
 ```
+
+__Averages of x die rolls__
+Consider rolling a die a lot of times and taking a histogram of the results, that's the left most plot. The bars are equally distributed at the six possible outcomes and thus the histogram is centered around 3.5. Now consider simulating lots of averages of 2 dice. Its histogram is also centered at 3.5. So is it for 3 and 4. Notice also the distribution gets increasing Gaussian looking (like a bell curve) and increasingly concentrated around 3.5.  
+```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+df <- data.frame(
+  sim_val = c(sample(1:6, sim_count, replace = TRUE),
+        apply(matrix(sample(1:6, sim_count*2, replace = TRUE), sim_count), 1, mean), # avg, 2 dice
+        apply(matrix(sample(1:6, sim_count*3, replace = TRUE), sim_count), 1, mean), # avg, 3 dice
+        apply(matrix(sample(1:6, sim_count*4, replace = TRUE), sim_count), 1, mean)  # avg, 4 dice
+        ),
+  sample_size = factor(rep(1 : 4, rep(sim_count, 4))))
+g <- ggplot(df, aes(x = sim_val, fill = sample_size)) + geom_histogram(alpha = .20, binwidth=.25, colour = "black") 
+g + facet_grid(. ~ sample_size)
+```
+
+
+__Averages of x coin flips__  
+The same. All of the distributions are centered around 0.5.  
+```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}
+df <- data.frame(
+  sim_val = c(sample(0:1, sim_count, replace = TRUE),
+        apply(matrix(sample(0:1, sim_count*10, replace = TRUE), sim_count), 1, mean),
+        apply(matrix(sample(0:1, sim_count*20, replace = TRUE), sim_count), 1, mean),
+        apply(matrix(sample(0:1, sim_count*30, replace = TRUE), sim_count), 1, mean)
+        ),
+  sample_size = factor(rep(c(1, 10, 20, 30), rep(sim_count, 4))))
+g <- ggplot(df, aes(x = sim_val, fill = sample_size)) + geom_histogram(alpha = .20, binwidth = 1 / 12, colour = "black"); 
+g + facet_grid(. ~ sample_size)
+```
+
+
+### Summary notes  
+- Expected values are properties of distributions.
+- The population mean is the center of mass of population.
+- The sample mean is the center of mass of the observed data.
+- The sample mean is an estimate of the population mean.
+- The sample mean is unbiased: the population mean of its distribution is the mean that it's  trying to estimate.
+- The more data that goes into the sample mean, the more concentrated its density / mass function is around the population mean.
+
+
