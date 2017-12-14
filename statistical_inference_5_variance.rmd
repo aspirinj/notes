@@ -22,6 +22,22 @@ library(png)
 The variance is a measure of *spread*.  
 The plot below shows a series of increasing variances.  
 
+```{r, fig.height = 6, fig.width = 8, fig.align='center'}
+input_val <- seq(-10, 10, by = .01)
+df <- data.frame(
+    y_val = c(
+        dnorm(input_val, mean = 0, sd = 1),
+        dnorm(input_val, mean = 0, sd = 2),
+        dnorm(input_val, mean = 0, sd = 3),
+        dnorm(input_val, mean = 0, sd = 4)
+    ),
+    x_val = rep(input_val, 4),
+    factor = factor(rep(1 : 4, rep(length(input_val), 4)))
+)
+df %>%  ggplot(aes(x = x_val, y = y_val, color = factor)) + 
+  geom_line(size = 2)    
+```
+
 The distribution of averages are always centered at the same spot as the original distribution, but are less spread out. The sample means tend to more converge to population mean than individual observations. (This is why the sample mean is a better estimate than the population mean???)  
 
 If $X$ is a random variable with mean $\mu$, the variance of $X$ is defined as:  
@@ -30,7 +46,6 @@ $$Var(X) = E[(X - \mu)^2] = E[X^2] - E[X]^2$$
 The first part of the equation can be considered as the expected squared distance from the mean. The second part is the expansion. The main benefit of working with standard deviations is that they have the same units as the data, whereas the variance has the units squared.  
 
 When talking about variance, we mean the population variance.  
-
 
 
 
@@ -58,50 +73,36 @@ y = p * (1 - p)
 plot(p, y, type = "l", lwd = 3, frame = FALSE)
 ```
 
-![Plot of the binomial variance](images/binomialVariance.png)
+
 
 ## The sample variance
-The sample variance is the estimator of the population
-variance. Recall that the population variance is the
-expected squared deviation around the population mean.
-The sample variance is (almost) the average squared deviation
-of observations around the sample mean. It is given by
+The sample variance is the estimator of the population variance.  
+The sample variance is (almost) the average squared deviation of observations around the sample mean. It is given by:  
 
-$
-S^2 = \frac{\sum_{i=1} (X_i - \bar X)^2}{n-1}
-$
+$$S^2 = \frac{\sum_{i=1} (X_i - \bar X)^2}{n-1}$$  
 
-The sample standard deviation is the square root of the sample variance.
-Note again that
-the sample variance is almost, but not quite, the average squared deviation from
-the sample mean since we divide by $n-1$ instead of
-$n$. Why do we do this you might ask? To answer that question
-we have to think in the terms of simulations. Remember that the
-sample variance is a random variable, thus it has a distribution
-and that distribution has an associated population mean. That
-mean is the population variance that we're trying to estimate
-if we divide by $(n-1)$ rather than $n$.
+The sample variance is a random variable, thus it has a distribution and that distribution has an associated population mean. 
 
-It is also nice that as we collect more data the distribution of the
-sample variance gets more concentrated around the population
-variance that it's estimating.
 
-## Simulation experiments
 
-[Watch this video before beginning.](http://youtu.be/uPjHB9JjGKI?list=PLpl-gQkQivXiBmGyzLrUjzsblmQsLtkzJ)
+## Simulation experiments  
+### Simulating from a population with $var=1$  
+Notice that these histograms are always centered in the same spot, 1. In other words, the *sample variance is an unbiased estimate of the population variances*. Notice also that they get more concentrated around the 1 as more data goes into them. Thus, sample variances comprised of more observations are less variable than sample variances comprised of fewer.  
 
-### Simulating from a population with variance 1
-Let's try simulating collections of standard normals and taking the variance.
-If we repeat this over and over, we get a sense of the distribution of
-sample variances variances.
+*Samples Variance*, samples from a population with standard normal distribution. The sample size of the salmon color distribution is 10. The simulation count is 10000.     
+```{r, fig.height=6, figh.width=6, fig.align='center', echo = FALSE}
+sim_count <- 10000 
+df <- data.frame(
+    sim_val = c(apply(matrix(rnorm(sim_count*10), sim_count), 1, var),
+          apply(matrix(rnorm(sim_count*20), sim_count), 1, var),
+          apply(matrix(rnorm(sim_count*30), sim_count), 1, var)),
+    sample_size = factor(rep(c("10", "20", "30"), c(sim_count, sim_count, sim_count))) 
+    )
+ggplot(df, aes(x = sim_val, fill = sample_size)) + 
+  geom_density(size = 2, alpha = .2) + 
+  geom_vline(xintercept = 1, size = 2) 
+```
 
-![Simulation of variances of samples of standard normals](images/normalVariances.png)
-
-Notice that these histograms are always centered in the same spot, 1. In
-other words, the sample variance is an unbiased estimate of the population
-variances. Notice also that they get more concentrated around the 1 as
-more data goes into them. Thus, sample variances comprised of more observations
-are less variable than sample variances comprised of fewer.
 
 ### Variances of x die rolls
 Let's try the same thing, now only with die rolls instead of simulating standard
@@ -109,7 +110,20 @@ normals. In this experiment, we simulated samples of die rolls, took the
 variance and then repeated that process over and over. What is plotted
 are histograms of the collections of sample variances.
 
-![Simulated distributions of variances of dies](images/dieVariances.png)
+Sample Variance, sam
+```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+sim_count <- 10000
+df <- data.frame(
+  sim_val = c(apply(matrix(sample(1:6, sim_count*10, replace = TRUE), sim_count), 1, var),
+              apply(matrix(sample(1:6, sim_count*20, replace = TRUE), sim_count), 1, var),
+              apply(matrix(sample(1:6, sim_count*30, replace = TRUE), sim_count), 1, var)
+        ),
+  sample_size = factor(rep(c(10, 20, 30), rep(sim_count, 3))))
+ggplot(df, aes(x = sim_val, fill = sample_size)) + 
+  geom_histogram(alpha = .20, binwidth=.3, colour = "black") + 
+  geom_vline(xintercept = 2.92, size = 2) + 
+  facet_grid(. ~ sample_size)
+```
 
 Recall that we calculated the variance of a die roll as 2.92 earlier on in
 this chapter. Notice each of the histograms are centered there. In addition,
@@ -167,10 +181,10 @@ means of $n$ standard normals. If our theory is correct, they should
 
 {title="Simulating means of random normals", line-numbers=off,lang=r}
 ~~~
-> nosim <- 1000
+> sim_count <- 1000
 > n <- 10
-## simulate nosim averages of 10 standard normals
-> sd(apply(matrix(rnorm(nosim * n), nosim), 1, mean))
+## simulate sim_count averages of 10 standard normals
+> sd(apply(matrix(rnorm(sim_count * n), sim_count), 1, mean))
 [1] 0.3156
 ## Let's check to make sure that this is sigma / sqrt(n)
 > 1 / sqrt(n)
@@ -193,9 +207,9 @@ have sd $1/\sqrt{12 \times n}$. Let's try it with a simulation.
 
 {title="Simulating means of uniforms", line-numbers=off,lang=r}
 ~~~
-> nosim <- 1000
+> sim_count <- 1000
 > n <- 10
-> sd(apply(matrix(runif(nosim * n), nosim), 1, mean))
+> sd(apply(matrix(runif(sim_count * n), sim_count), 1, mean))
 [1] 0.09017
 > 1 / sqrt(12 * n)
 [1] 0.09129
@@ -208,9 +222,9 @@ should have standard deviation $2/\sqrt{n}$. Again let's try it out.
 
 {title="Simulating means of Poisson variates", line-numbers=off,lang=r}
 ~~~
-> nosim <- 1000
+> sim_count <- 1000
 > n <- 10
-> sd(apply(matrix(rpois(nosim * n, 4), nosim), 1, mean))
+> sd(apply(matrix(rpois(sim_count * n, 4), sim_count), 1, mean))
 [1] 0.6219
 > 2 / sqrt(n)
 [1] 0.6325
@@ -230,10 +244,10 @@ Let's try it.
 
 {title="Simulating means of coin flips", line-numbers=off,lang=r}
 ~~~
-> nosim <- 1000
+> sim_count <- 1000
 > n <- 10
-> sd(apply(matrix(sample(0 : 1, nosim * n, replace = TRUE),
-                nosim), 1, mean))
+> sd(apply(matrix(sample(0 : 1, sim_count * n, replace = TRUE),
+                sim_count), 1, mean))
 [1] 0.1587
 > 1 / (2 * sqrt(n))
 [1] 0.1581
@@ -286,33 +300,3 @@ divided by $n$.
 averages from random samples,
 even though we only get one to look at in a given data set.
 
-## Exercises
-1. If I have a random sample from a population, the sample variance is an estimate of?
-  - The population standard deviation.
-  - The population variance.
-  - The sample variance.
-  - The sample standard deviation.
-2. The distribution of the sample variance of a random sample from a population is centered at what?
-  - The population variance.
-  - The population mean.
-3. I keep drawing samples of size $n$ from a population with variance $\sigma^2$ and taking their average. I do this thousands of times. If I were to take the variance of the collection of averages, about what would it be?
-4. You get a random sample of $n$ observations from a population and take their average. You would like to estimate the variability of averages of $$n$$ observations from this population to better understand how precise of an estimate it is. Do you need to repeated collect averages to do this?
-  - No, we can multiply our estimate of the population variance by $1/n$ to get a good estimate of the variability of the average.
-  - Yes, you have to get repeat averages.
-5. A random variable takes the value -4 with probability .2 and 1 with probability .8. What
-is the variance of this random variable? [Watch a video solution to this problem.](http://youtu.be/Em-xJeQO1rc?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L)
-and [look at a version with a worked out solution.](http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#6)
-6. If $\bar X$ and $\bar Y$ are comprised of n iid random variables arising from distributions
-having  means $\mu_x$ and $\mu_y$, respectively and common variance
-$\sigma^2$
-what is the variance $\bar X - \bar Y$?
-[Watch a video solution to this problem here](http://youtu.be/7zJhPzX6jns?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L) and [see a typed up solution here](http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#7)
-7. Let $X$ be a random variable having standard deviation $\sigma$. What can
-be said about the variance of $X /\sigma$? [Watch a video solution to this
-problem here](http://youtu.be/0WUj18_BUPA?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L) and
-[typed  up solutions here](http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#8).
-8. Consider the following pmf given in R by the code `p <- c(.1, .2, .3, .4)`
-and 'x <- 2 : 5`. What is the variance? [Watch a video solution to this problem here](http://youtu.be/HSn8n4DsGSg?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L)
-and [here is the problem worked out](http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#10).
-9. If you roll ten standard dice, take their average, then repeat this process over and over and construct a histogram,  what would be its variance expressed to 3 decimal places?
-[Watch a video solution here](https://www.youtube.com/watch?v=MLfo9zz1zX4&list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&index=17) and [see the text here](http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#12).
