@@ -1,3 +1,23 @@
+---
+title: "Statistical Inference Notes"
+author: "Howard J"
+date: "December 10, 2017"
+output:
+html_document:
+  highlight: pygments
+  theme: spacelab
+  toc: yes
+header-includes: \usepackage{graphicx}
+---
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+library(grid)
+library(png)
+```
+
+
 ## The Goals of Inference  
 1. Estimate and quantify the *uncertainty of an estimate of a population quantity* (the proportion of people who will vote for a candidate).  
 2. Determine whether a population quantity is a *benchmark value* (“is the treatment effective?”).  
