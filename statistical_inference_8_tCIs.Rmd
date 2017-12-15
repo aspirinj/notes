@@ -30,23 +30,34 @@ $t$ distribution is for small samples.
 or normal interval, just always use the $t$ interval
 
 
-## Gosset's $t$ distribution
+### Gosset's $t$ distribution
+Invented by William Gosset, with a thicker tails than the normal. It is indexed by a degrees of freedom; gets more like a standard normal as df gets larger. It assumes that the underlying data are iid.   
 
-- Invented by William Gosset (under the pseudonym "Student") in 1908
-- Has thicker tails than the normal
-- Is indexed by a degrees of freedom; gets more like a standard normal as df gets larger
-- It assumes that the underlying data are iid 
 Gaussian with the result that
-$$
-\frac{\bar X - \mu}{S/\sqrt{n}}
-$$
+$$\frac{\bar X - \mu}{S/\sqrt{n}}$$  
 follows Gosset's $t$ distribution with $n-1$ degrees of freedom
 - (If we replaced $s$ by $\sigma$ the statistic would be exactly standard normal)
-- Interval is $\bar X \pm t_{n-1} S/\sqrt{n}$ where $t_{n-1}$
-is the relevant quantile
+- Interval is $\bar X \pm t_{n-1} S/\sqrt{n}$ where $t_{n-1}$ is the relevant quantile
 
----
-## Code for manipulate
+
+
+### The Student $t$ Distribution Function  
+*Density*, *distribution* function, *quantile* function and *random generation* for the $t$ distribution with $df$ degrees of freedom (and optional non-centrality parameter $ncp$).  
+
+Functions:  
+`dt(x, df, ncp, log = FALSE)`  
+`pt(q, df, ncp, lower.tail = TRUE, log.p = FALSE)`  
+`qt(p, df, ncp, lower.tail = TRUE, log.p = FALSE)`  
+`rt(n, df, ncp)`
+
+`df`: degrees of freedom, positive, maybe non-integer. $df = Inf$ is allowed.  
+`ncp`: non-centrality parameter delta; currently except for $rt()$, only for $abs(ncp) \le 37.62$. If omitted, use the central $t$ distribution.  
+`log`, `log.p`: logical; if TRUE, probabilities p are given as log(p).  
+`lower.tail`:	logical; if TRUE (default), probabilities are $P[X \le x]$, otherwise, $P[X > x]$.  
+
+
+
+### Code for manipulate  
 ```{r, echo=TRUE,eval=FALSE}
 k <- 1000
 xvals <- seq(-5, 5, length = k)
@@ -54,10 +65,11 @@ myplot <- function(df){
   d <- data.frame(y = c(dnorm(xvals), dt(xvals, df)),
                   x = xvals,
                   dist = factor(rep(c("Normal", "T"), c(k,k))))
-  g <- ggplot(d, aes(x = x, y = y)) 
+  g <- ggplot(d, aes(x = x, y = y))
   g <- g + geom_line(size = 2, aes(colour = dist))
   g
 }
+
 manipulate(myplot(mu), mu = slider(1, 20, step = 1))  
 ```
 
@@ -153,11 +165,11 @@ as.vector(t.test(extra ~ I(relevel(group, 2)), paired = TRUE, data = sleep)$conf
 ---
 ## Confidence interval
 
-- Therefore a $(1 - \alpha)\times 100\%$ confidence interval for $\mu_y - \mu_x$ is 
+- Therefore a $(1 - \alpha)\times 100\%$ confidence interval for $\mu_y - \mu_x$ is
 $$
     \bar Y - \bar X \pm t_{n_x + n_y - 2, 1 - \alpha/2}S_p\left(\frac{1}{n_x} + \frac{1}{n_y}\right)^{1/2}
 $$
-- The pooled variance estimator is $$S_p^2 = \{(n_x - 1) S_x^2 + (n_y - 1) S_y^2\}/(n_x + n_y - 2)$$ 
+- The pooled variance estimator is $$S_p^2 = \{(n_x - 1) S_x^2 + (n_y - 1) S_y^2\}/(n_x + n_y - 2)$$
 - Remember this interval is assuming a constant variance across the two groups
 - If there is some doubt, assume a different variance per group, which we will discuss later
 
@@ -219,7 +231,7 @@ wideCW <- mutate(wideCW,
 ## Plotting the raw data
 
 ```{r, echo =FALSE, fig.align='center', fig.width=12, fig.height=6}
-g <- ggplot(ChickWeight, aes(x = Time, y = weight, 
+g <- ggplot(ChickWeight, aes(x = Time, y = weight,
                              colour = Diet, group = Chick))
 g <- g + geom_line()
 g <- g + stat_summary(aes(group = 1), geom = "line", fun.y = mean, size = 1, col = "black")
@@ -292,4 +304,3 @@ $$
   and count data until covering glms in the regression class.
 * In addition, Mathematical Biostatistics Boot Camp 2 covers many special
   cases relevant to biostatistics.
-
