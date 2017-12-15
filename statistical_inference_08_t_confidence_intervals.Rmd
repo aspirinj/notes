@@ -73,7 +73,7 @@ myplot <- function(df){
 manipulate(myplot(mu), mu = slider(1, 20, step = 1))  
 ```
 
----
+
 ## Easier to see
 ```{r, eval = FALSE, echo = TRUE}
 pvals <- seq(.5, .99, by = .01)
@@ -90,7 +90,6 @@ myplot2 <- function(df){
 manipulate(myplot2(df), df = slider(1, 20, step = 1))
 ```
 
----
 
 ## Note's about the $t$ interval
 

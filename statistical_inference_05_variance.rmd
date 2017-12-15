@@ -1,6 +1,6 @@
 ---
 title: "Statistical Inference Notes"
-author: "Howard J"
+author: "Howard J, based on the work of Caffo"
 date: "December 13, 2017"
 output:
 html_document:
@@ -131,34 +131,12 @@ they get more concentrated around 2.92 as more the variances are comprised
 of more dice.
 
 
-## The standard error of the mean
+### The standard error of the mean  
+How to estimate the variability of the mean of a sample, when we only get to observe one realization. The average of random sample from a population is itself a random variable having a distribution. We know that this distribution is centered around the population mean, $E[\bar X] = \mu$. We also know the variance of the distribution of means of random samples: $Var(\bar X) = \sigma^2 / n$, where $\sigma^2$ is the variance of the population being sampled from.
 
-At last, we finally get to a perhaps very surprising (and useful) fact:
-how to estimate the variability of the mean of a sample, when we only get to observe
-one realization.  Recall that the average of random sample from a population
-is itself a random variable having a distribution, which in simulation
-settings we can explore by repeated sampling averages. We know that this
-distribution is centered around the population mean,
-$E[\bar X] = \mu$. We also know the variance of the distribution
-of means of random samples.
+So, we can get a estimate of the variability of the mean, even though we only get to observe 1 mean. Notice also this explains why in all of our simulation experiments the variance of the sample mean kept getting smaller as the sample size increased.
 
-The variance of the sample mean is: $Var(\bar X) = \sigma^2 / n$
-where $\sigma^2$ is the variance of the population being sampled
-from.
-
-This is very useful, since we don't have repeat sample means
-to get its variance directly using the data. We already know a good estimate of
-$\sigma^2$ via the sample variance. So, we can get a good estimate
-of the variability of the mean, even though we only get to observe 1 mean.
-
-Notice also this explains why in all of our simulation experiments the
-variance of the sample mean kept getting smaller as the sample size
-increased. This is because of the square root of the sample size in the
-denominator.
-
-Often we take the square root of the variance of the mean to get the standard
-deviation of the mean. We call the standard deviation of a statistic its
-standard error.
+The standard deviation of a statistic its is __standard error__.
 
 ### Summary notes
 * The sample variance, $S^2$, estimates the population variance, $\sigma^2$.
