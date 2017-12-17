@@ -15,28 +15,29 @@ header-includes: \usepackage{graphicx}
 * A null hypothesis is specified that represents the status quo,
   usually labeled $H_0$
 * The null hypothesis is assumed true and statistical evidence is required
-  to reject it in favor of a research or alternative hypothesis 
+  to reject it in favor of a research or alternative hypothesis
 
----
-## Example
-* A respiratory disturbance index of more than $30$ events / hour, say, is 
-  considered evidence of severe sleep disordered breathing (SDB).
+*Example:*  
+* A respiratory disturbance index of more than $30$ events / hour, say, is
+  considered evidence of severe sleep disordered breathing (SDB).  
 * Suppose that in a sample of $100$ overweight subjects with other
   risk factors for sleep disordered breathing at a sleep clinic, the
-  mean RDI was $32$ events / hour with a standard deviation of $10$ events / hour.
-* We might want to test the hypothesis that 
+  mean RDI was $32$ events / hour with a standard deviation of $10$ events / hour.  
+  - We might want to test the hypothesis that
   * $H_0 : \mu = 30$
-  * $H_a : \mu > 30$
+  * $H_a : \mu > 30$f
   * where $\mu$ is the population mean RDI.
 
 
 ### Hypothesis testing
 The alternative hypotheses are typically of the form $<$, $>$ or $\neq$.   
 Two types of errors:  
+
 Truth | Decide | Result | Comments
 ---|---|---|---
 $H_0$ | $H_a$ | Type I error | low standard, innocent people convicted
 $H_a$ | $H_0$ | Type II error | high standard, guilty people let free
+
 
 $\alpha$: Type I error rate. The Probability of rejecting the null hypothesis when, in fact, the null hypothesis is correct.   
 $\beta$: Type II error rate. The Probability of the failure of rejecting the null hypothesis when, in fact, the null hypothesis is false.   
@@ -45,8 +46,8 @@ Hypothesis testing strategy would reject the null hypothesis if $\bar X$ was lar
 
 
 *Example:* Assume standard error of the mean $10 / \sqrt{100} = 1$
-- Under $H_0$ $\bar X \sim N(30, 1)$ 
-- We want to chose $C$ so that the $P(\bar X > C; H_0)$ is 
+- Under $H_0$ $\bar X \sim N(30, 1)$
+- We want to chose $C$ so that the $P(\bar X > C; H_0)$ is
 5%
 - The 95th percentile of a normal distribution is 1.645
 standard deviations from the mean
@@ -72,12 +73,12 @@ standard deviations from the mean
 
 ---
 ## General rules
-* The $Z$ test for $H_0:\mu = \mu_0$ versus 
+* The $Z$ test for $H_0:\mu = \mu_0$ versus
   * $H_1: \mu < \mu_0$
   * $H_2: \mu \neq \mu_0$
-  * $H_3: \mu > \mu_0$ 
+  * $H_3: \mu > \mu_0$
 * Test statistic $ TS = \frac{\bar{X} - \mu_0}{S / \sqrt{n}} $
-* Reject the null hypothesis when 
+* Reject the null hypothesis when
   * $TS \leq Z_{\alpha} = -Z_{1 - \alpha}$
   * $|TS| \geq Z_{1 - \alpha / 2}$
   * $TS \geq Z_{1 - \alpha}$
@@ -156,7 +157,7 @@ t.test(father.son$sheight - father.son$fheight)
 ## Two group intervals
 - First, now you know how to do two group T tests
 since we already covered indepedent group T intervals
-- Rejection rules are the same 
+- Rejection rules are the same
 - Test $H_0 : \mu_1 = \mu_2$
 - Let's just go through an example
 
@@ -178,18 +179,12 @@ wideCW <- mutate(wideCW,
 ### Unequal variance T test comparing diets 1 and 4
 ```{r,echo=TRUE, comment="> ", results='markup'}
 wideCW14 <- subset(wideCW, Diet %in% c(1, 4))
-t.test(gain ~ Diet, paired = FALSE, 
+t.test(gain ~ Diet, paired = FALSE,
        var.equal = TRUE, data = wideCW14)
 ```
 
+*Exact binomial test:* Recall this problem, *Suppose a friend has $8$ children, $7$ of which are girls and none are twins*? Perform the relevant hypothesis test. $H_0 : p = 0.5$ $H_a : p > 0.5$. What is the relevant rejection region so that the probability of rejecting is (less than) 5%?  
 
-
----
-## Exact binomial test
-- Recall this problem, *Suppose a friend has $8$ children, $7$ of which are girls and none are twins*
-- Perform the relevant hypothesis test. $H_0 : p = 0.5$ $H_a : p > 0.5$
-  - What is the relevant rejection region so that the probability of rejecting is (less than) 5%?
-  
 Rejection region | Type I error rate |
 ---|---|
 [0 : 8] | `r pbinom(-1, size = 8, p = .5, lower.tail = FALSE)`
@@ -204,12 +199,10 @@ Rejection region | Type I error rate |
 
 ---
 ## Notes
-* It's impossible to get an exact 5% level test for this case due to the discreteness of the binomial. 
+* It's impossible to get an exact 5% level test for this case due to the discreteness of the binomial.
   * The closest is the rejection region [7 : 8]
   * Any alpha level lower than `r 1 / 2 ^8` is not attainable.
 * For larger sample sizes, we could do a normal approximation, but you already knew this.
-* Two sided test isn't obvious. 
+* Two sided test isn't obvious.
   * Given a way to do two sided tests, we could take the set of values of $p_0$ for which we fail to reject to get an exact binomial confidence interval (called the Clopper/Pearson interval, BTW)
 * For these problems, people always create a P-value (next lecture) rather than computing the rejection region.
-
-
