@@ -20,7 +20,7 @@ library(png)
 
 
 
-## Distributions  
+### Distributions  
 For each distribution, R has four functions:  
 
 Prefix  |  Continous  |  Discrete
@@ -156,21 +156,20 @@ print(x)
 
 ### The Normal Distribution
 In fact, the normal distribution only requires two numbers to characterize it. Specifically, a random variable is said to follow a **Normal Distribution** or **Gaussian Distribution** with *mea*n $\mu$ and *variance* $\sigma^2$ if the associated density is:  
-$$ (2\pi \sigma^2)^{-1/2}e^{-(x - \mu)^2/2\sigma^2}. $$  
-
-If $X$ is a random variable with this density, then $E[X] = \mu$ and $Var(X) = \sigma^2$, $X$ is denoted as a **Normal Random Variable**. We write as $X\sim N(\mu, \sigma^2)$. When $\mu = 0$ and $\sigma = 1$ the resulting distribution is called **Standard Normal Distribution**. **Standard normal Random Variable** are often labeled $Z$.
+$$ f(x)=(2\pi \sigma^2)^{-1/2}e^{-(x - \mu)^2/2\sigma^2}. $$  
+where $-\infty \lt x \lt \infty$  
+If $X$ is a random variable with this density, then $E[X] = \mu$ and $Var(X) = \sigma^2$, $X$ is denoted as a **Normal Random Variable**, or simply that $X$ is **Normally Distributed** with parameters $\mu$ and $\sigma^2$. We write as $X\sim N(\mu, \sigma^2)$. When $\mu = 0$ and $\sigma = 1$ the resulting distribution is called **Standard Normal Distribution**. **Standard normal Random Variable** are often labeled $Z$.
 
 If we know that the *population is normally distributed*, we can estimate about the population, by estimating the population mean and variance. (These two population quantities are estimated by the sample mean and the sample variance.)
 
 
-The most relevant probabilities are.
-1. Approximately 68\%, 95\% and 99\%  of the normal density lies within 1, 2 and 3 standard deviations from the mean, respectively.
-2. -1.28, -1.645, -1.96 and -2.33 are the $10^{th}$, $5^{th}$, $$2.5^{th}$ and $1^{st}$ percentiles of the standard normal distribution, respectively??
-3. By symmetry, 1.28, 1.645, 1.96 and 2.33 are the $90^{th}$, $$95^{th}$, $97.5^{th}$ and $99^{th}$ percentiles of the standard normal distribution, respectively??
+The most relevant probabilities are:    
+1. Approximately 68\%, 95\% and 99\%  of the normal density lies within 1, 2 and 3 standard deviations from the mean, respectively.  
+2. -1.28, -1.645, -1.96 and -2.33 are the $10^{th}$, $5^{th}$, $2.5^{th}$ and $1^{st}$ percentiles of the standard normal distribution, respectively??  
+3. By symmetry, 1.28, 1.645, 1.96 and 2.33 are the $90^{th}$, $95^{th}$, $97.5^{th}$ and $99^{th}$ percentiles of the standard normal distribution, respectively??  
 
 
-
-### Shifting and Scaling Normal Distribution    
+#### Shifting and Scaling Normal Distribution    
 Since the normal distribution is characterized by only the *mean* and *variance*, which are a *shift* and a *scale*, we can transform normal random variables to be standard normals and vice versa. The normal distribution $X \sim N(\mu,\sigma^2)$ can be converted to standard normal distribution:  
 $$Z = \frac{X -\mu}{\sigma} \sim N(0, 1^2)$$  
 
@@ -180,3 +179,20 @@ $$X = \mu + \sigma Z \sim N(\mu, \sigma^2)$$
 Where $X$ is $X \sim N(\mu,\sigma^2)$.  
 
 We can use these facts to answer questions about non-standard normals by relating them back to the standard normal.  
+
+
+### Exponential Random Variables  
+A continuous random variable whose probability density function is given, for some
+$λ > 0$, by
+
+$$
+f(z) =
+\left
+\{
+  \begin{array}{rcl}
+    \overline{\overline{z^2}+\cos z} & \mbox{for} & |z|<3 \\
+    0  & \mbox{for} & 3\leq|z|\leq5 \\
+    \sin\overline{z} & \mbox{for} & |z|>5
+  \end{array}
+\right.
+$$

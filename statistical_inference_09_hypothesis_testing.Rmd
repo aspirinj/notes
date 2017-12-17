@@ -89,7 +89,7 @@ standard deviations from the mean
   our model is wrong) or there is a low probability that we have made
   an error
 * We have not fixed the probability of a type II error, $\beta$;
-  therefore we tend to say ``Fail to reject $H_0$'' rather than
+  therefore we tend to say Fail to reject $H_0$ rather than
   accepting $H_0$
 * Statistical significance is no the same as scientific
   significance
