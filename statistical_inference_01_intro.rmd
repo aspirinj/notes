@@ -1,5 +1,5 @@
 ---
-title: "Statistical Inference Notes"
+title: "Inference 01 - Introduction"
 author: "Howard J"
 date: "December 10, 2017"
 output:
@@ -7,10 +7,9 @@ html_document:
   highlight: pygments
   theme: spacelab
   toc: yes
-header-includes: \usepackage{graphicx}
 ---
 
-```{r message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(UsingR)
 library(tidyverse)
 library(grid)
@@ -18,14 +17,14 @@ library(png)
 ```
 
 
-## The Goals of Inference  
+### The Goals of Inference  
 1. Estimate and quantify the *uncertainty of an estimate of a population quantity* (the proportion of people who will vote for a candidate).  
 2. Determine whether a population quantity is a *benchmark value* (“is the treatment effective?”).  
 3. Infer a *mechanistic relationship* when quantities are measured with noise (“What is the slope for Hooke’s law?”)  
 4. Determine the impact of a policy? (“If we reduce pollution levels, will asthma rates decline?”)  
 5. Talk about the probability that something occurs.  
 
-## The tools of the trade  
+### The Tools of the Trade  
 1. Randomization: concerned with *balancing unobserved variables* that may confound inferences of interest.  
 2. Random Sampling: concerned with obtaining data that is *representative of the population* of interest.  
 3. Sampling Models: concerned with creating *a model for the sampling process*, the most common is so called “iid”.  
@@ -37,7 +36,7 @@ library(png)
 9. Permutation, Randomization and Exchangeability Testing: the process of *using data permutations to perform inferences*.  
 
 
-## Different Styles of Inference
+### Different Styles of Inference
 1. Frequency probability: is the long run proportion of times an event occurs in iid repetitions.  
 2. Bayesian probability: is the probability calculus of beliefs, given that beliefs follow certain rules.  
 

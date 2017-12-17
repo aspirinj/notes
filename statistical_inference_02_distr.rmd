@@ -1,5 +1,5 @@
 ---
-title: "Statistical Inference Notes"
+title: "Inference 02 - Distribution"
 author: "Howard J"
 date: "December 10, 2017"
 output:
@@ -7,10 +7,10 @@ html_document:
   highlight: pygments
   theme: spacelab
   toc: yes
-header-includes: \usepackage{graphicx}
 ---
 
-```{r message=FALSE, warning=FALSE}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(UsingR)
 library(tidyverse)
 library(grid)
@@ -165,8 +165,8 @@ If we know that the *population is normally distributed*, we can estimate about 
 
 The most relevant probabilities are:    
 1. Approximately 68\%, 95\% and 99\%  of the normal density lies within 1, 2 and 3 standard deviations from the mean, respectively.  
-2. -1.28, -1.645, -1.96 and -2.33 are the $10^{th}$, $5^{th}$, $2.5^{th}$ and $1^{st}$ percentiles of the standard normal distribution, respectively??  
-3. By symmetry, 1.28, 1.645, 1.96 and 2.33 are the $90^{th}$, $95^{th}$, $97.5^{th}$ and $99^{th}$ percentiles of the standard normal distribution, respectively??  
+2. -1.28, -1.645, -1.96 and -2.33 are the $10^{th}$, $5^{th}$, $2.5^{th}$ and $1^{st}$ percentiles of the standard normal distribution, respectively.    
+3. By symmetry, 1.28, 1.645, 1.96 and 2.33 are the $90^{th}$, $95^{th}$, $97.5^{th}$ and $99^{th}$ percentiles of the standard normal distribution, respectively.    
 
 
 #### Shifting and Scaling Normal Distribution    
@@ -182,17 +182,59 @@ We can use these facts to answer questions about non-standard normals by relatin
 
 
 ### Exponential Random Variables  
-A continuous random variable whose probability density function is given, for some
-$λ > 0$, by
-
+__PDF__  
+A continuous random variable whose *PDF* is given, for some $\lambda \gt 0$, by  
 $$
-f(z) =
+f(x) =
 \left
 \{
   \begin{array}{rcl}
-    \overline{\overline{z^2}+\cos z} & \mbox{for} & |z|<3 \\
-    0  & \mbox{for} & 3\leq|z|\leq5 \\
-    \sin\overline{z} & \mbox{for} & |z|>5
+    \lambda e^{- \lambda x}  & \mbox{if} & x \ge 0 \\
+    0                        & \mbox{if} & x \lt 0
   \end{array}
 \right.
 $$
+
+$X$ is said to be an exponential random variable (or, exponentially distributed) with parameter $\lambda$.  
+
+__CDF__  
+The cumulative distribution function $F(x)$ of an exponential random variable is given by:  
+$$F(a)=P\{X \le a \}$$
+
+$$
+\begin{array}{rl}
+  F(a)= & P\{X \le a \}                              \\
+      = & \int^a_0 \lambda e^ {-\lambda x} dx        \\
+      = & - e^{-\lambda x} |^a_0                     \\
+      = & 1 - e^{-\lambda a}   \:\:\:\:\:  a \ge 0
+\end{array}
+$$
+*Note:* $F(\infty) = \int^\infty_0 \lambda e^ {-\lambda x} dx = 1$
+
+
+__$E[X]$ and $Var(X)$__:  
+
+To begin, for $n>0$, calculate $E[X^n]$:  
+
+$$
+\begin{array}{rl}
+  E[X^n] = & \int_0^\infty x^n \lambda e^ {-\lambda x} dx          \\
+         = & {n \over \lambda} E[X^{n-1}]
+\end{array}
+$$
+Letting $n=1$ and $n=2$ gives:  
+$$ E[X]= {1 \over \lambda} $$
+$$ E[X^2]= {2 \over \lambda} E[X] = {2 \over \lambda^2} $$
+$Var(X)$:  
+$$ Var(X) = E[X^2] - E[X]^2 = {1 \over \lambda^2} $$
+
+In practice, the exponential distribution often arises as the distribution of the amount of time until some specific event occurs. For instance, the amount of time (starting from now) until an earthquake occurs, or until a new war breaks out, or until a telephone call you receive turns out to be a wrong number are all random variables that tend in practice to have exponential distributions.  
+
+
+
+
+
+
+
+
+
