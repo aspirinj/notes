@@ -45,26 +45,29 @@ $$
 
 where $p(x_i) = 1/n$.
 
-*Example:* Galton's tabulated data used to study the relationship between a parent's height and their childrens. The data were tabulated and consequently made discrete.  
+#### Example: 
+Galton's tabulated data used to study the relationship between a parent's height and their childrens. The data were tabulated and consequently made discrete.  
 
 ```{r load galton}
-library(UsingR); data(galton); library(ggplot2)
+data(galton)
 tail(galton)
 ```
 
 ```{r}
 longGalton <- gather(galton, key = person_attr, value = measurement, child, parent)
-g <- ggplot(longGalton, aes(x = measurement)) + 
-  geom_histogram(aes(y = ..density.., fill = person_attr), binwidth=1, color = "black") + 
+g <- ggplot(longGalton, aes(x = measurement, y = ..density..)) + 
+  geom_histogram(aes(fill = person_attr), binwidth=1, color = "black") + 
   geom_density(size = 2) +
   facet_grid(. ~ person_attr)
 g
 ```
 
 
-*Example:* Suppose that a die is rolled and $X$ is the number face up. What is the expected value of $X$?  
-```{r, fig.align='center', echo=FALSE, fig.height=4, fig.width=10}
-ggplot(data.frame(x = factor(1 : 6), y = rep(1/6, 6)), aes(x = x, y = y)) + geom_bar(stat = "identity", colour = 'black', fill = "lightblue")
+#### Example: 
+Suppose that a die is rolled and $X$ is the number face up. What is the expected value of $X$?  
+```{r, fig.align='center', fig.height=4, fig.width=10}
+ggplot(data.frame(x_val=factor(1:6), y_val=rep(1/6,6)), aes(x=x_val, y=y_val)) + 
+  geom_bar(stat="identity", colour = 'black', fill = "lightblue")
 ```
 
 
@@ -83,19 +86,35 @@ __Standard normals__
 Consider simulating lots of *standard normals* and plotting a histogram (the blue density). Now consider simulating lots of *averages of 10 standard normals* and plotting their histogram (the salmon colored density). Notice that both of them are centered in the same spot. The simulation of average of multiple random variables more concentrated around that point.  
 
 Simulating normals with $mean=0$ and $var=1$ versus averages of 10 normals from the same population.  
-```{r, fig.height=6, figh.width=6, fig.align='center', echo = FALSE}
-sim_count <- 10000; sample_size <- 10
+```{r, fig.height=6, figh.width=6, fig.align='center'}
+sim_count <- 10000
+sample_size <- 10
 df <- data.frame(
-    sim_val = c(rnorm(sim_count), apply(matrix(rnorm(sim_count * sample_size), sim_count), 1, mean)),
-    type = factor(rep(c("Obs", "Mean"), c(sim_count, sim_count))) 
+    sim_val=c(rnorm(sim_count), apply(matrix(rnorm(sim_count*sample_size), sim_count), 1, mean)),
+    type=factor(rep(c("Obs", "Mean"), c(sim_count, sim_count))) 
     )
 ggplot(df, aes(x = sim_val, fill = type)) + 
   geom_density(size = 2, alpha = .2); 
 ```
 
+Simulating exponential distribution with $\lambda=0.2$ versus averages of 40 exponential from the same population:  
+```{r}
+lambda <- 0.2
+sim_count <- 1000
+sample_size <- 40
+df <- data.frame(
+    sim_val=c(rexp(sim_count,lambda), apply(matrix(rexp(sim_count*sample_size,lambda), sim_count), 1, mean)),
+    type=factor(rep(c("Obs", "Mean"), c(sim_count, sim_count))) 
+    )
+ggplot(df, aes(x = sim_val, fill = type)) + 
+  geom_density(size = 2, alpha = .2)
+```
+
+
 __Averages of x die rolls__
 Consider rolling a die a lot of times and taking a histogram of the results, that's the left most plot. The bars are equally distributed at the six possible outcomes and thus the histogram is centered around 3.5. Now consider simulating lots of averages of 2 dice. Its histogram is also centered at 3.5. So is it for 3 and 4. Notice also the distribution gets increasing Gaussian looking (like a bell curve) and increasingly concentrated around 3.5.  
-```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+
+```{r, fig.align='center',fig.height=5, fig.width=10}  
 df <- data.frame(
   sim_val = c(sample(1:6, sim_count, replace = TRUE),
         apply(matrix(sample(1:6, sim_count*2, replace = TRUE), sim_count), 1, mean), # avg, 2 dice
@@ -110,7 +129,7 @@ g + facet_grid(. ~ sample_size)
 
 __Averages of x coin flips__  
 The same. All of the distributions are centered around 0.5.  
-```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r, fig.align='center',fig.height=5, fig.width=10}
 df <- data.frame(
   sim_val = c(sample(0:1, sim_count, replace = TRUE),
         apply(matrix(sample(0:1, sim_count*10, replace = TRUE), sim_count), 1, mean),
