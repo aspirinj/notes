@@ -15,6 +15,7 @@ library(UsingR)
 library(tidyverse)
 library(grid)
 library(png)
+library(manipulate)
 ```
 
 
