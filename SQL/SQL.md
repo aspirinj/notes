@@ -101,7 +101,7 @@ FROM users u LEFT JOIN dogs d
    ON u.user_guid=d.user_guid
 ```
 
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows1.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows1.png)
 
 
 *Example:* to find out how many duplications:
@@ -112,7 +112,7 @@ FROM users u LEFT JOIN dogs d
 GROUP BY u.user_guid
 ORDER BY numrows DESC
 ```
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows2.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows2.png)
 
 *Example:* take a look the duplicate data:
 ```SQL
@@ -125,7 +125,7 @@ GROUP BY DistictUUsersID.user_guid
 HAVING numrows>10
 ORDER BY numrows DESC;
 ```
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows6.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows6.png)
 
 
 *Example:* We could simply join the distinct $user_guid$ from the $users$ table in the first place:  
@@ -138,7 +138,7 @@ LEFT JOIN dogs d
 GROUP BY DistinctUUsersID.user_guid
 ORDER BY numrows DESC
 ```
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows3.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows3.png)
 
 
 *Example:* also select the distinct $user_guid$ from the $dogs$ table:  
@@ -152,7 +152,7 @@ LEFT JOIN (SELECT DISTINCT d.user_guid
 GROUP BY DistinctUUsersID.user_guid
 ORDER BY numrows DESC;
 ```
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows4.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows4.png)
 
 *Example:* now we are ready to extract data as we know no duplicate row exists:
 ```SQL
@@ -166,4 +166,4 @@ LEFT JOIN (SELECT DISTINCT d.user_guid, d.dog_guid, d.breed
 ON DistinctUUsersID.user_guid=DistictDUsersID.user_guid
 GROUP BY DistinctUUsersID.user_guid;
 ```
-![Exploding Rows](sql_figures\SQL9_Subqueries_and_Derived_Tables_exploding_rows5.png)
+![Exploding Rows](sql_figures/SQL9_Subqueries_and_Derived_Tables_exploding_rows5.png)
