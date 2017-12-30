@@ -1,15 +1,19 @@
 ---
-title: "regression"
+title: "Regression - Intro"
 author: "Howard J"
-date: "December 11, 2017"
-output: 
-  html_document:
-    toc: yes
+date: "December 29, 2017"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+```
+
 
 
 ## Intro  
@@ -17,4 +21,45 @@ __Regression Analysis__ is a broad term fora set of methodologies used to predic
 
 *Example:* an exercise physiologist might use regression analysis to develop an equation for predicting the expected number of calories a person will burn while exercising on a treadmill. The response variable is the number of calories burned (calculated from the amount of oxygen consumed), and the predictor variables might include duration of exercise (minutes), percentage of time spent at their target heart rate, average speed (mph), age (years), gender, and body massindex (BMI).
 
+### Tasks
+1. **Prediction**, e.g., to use the parent's heights to predict children's heights.  
+2. **Modeling**, e.g., to try to find a parsimonious, easily described mean relationship between parental and child heights.
+3. **Covariation**, e.g., to investigate the variation in child heights that appears unrelated to parental heights (residual variation) and to quantify what impact genotype information has beyond parental height in explaining child height.
+
+### Galton's Data
+This data was created by Francis Galton in 1885. Galton was a statistician who invented the term and concepts of *regression* and *correlation*.  
+
+Let's look at the marginal (parents disregarding children and children disregarding parents) distributions first. The parental distribution is all heterosexual couples. The parental average was corrected for gender via multiplying female heights by 1.08. Remember, Galton didn't have regression to help figure out a better way to do this correction!
+
+```{r}
+data(galton)
+str(galton)
+```
+
+```{r}
+galton_long <- gather(galton,key=people,value=height,child:parent)
+ggplot(galton_long, aes(x = height, fill = people)) +
+    geom_histogram(colour = "black", binwidth=1) + 
+    facet_grid(. ~ people)
+```
+
+### The Middle
+Consider only the children's heights. How could one describe the "middle"?
+
+Let $Y_i$ be the height of child $i$ for $i = 1, \ldots, n = 928$, then define the *middle* as $\mu$ that minimizes:  
+$$\sum_{i=1}^n (Y_i - \mu)^2$$
+
+For this sample data, $\mu$ must be the center of mass of the histogram, so that $\mu = \bar Y$. This is called the *least squares estimate* for the **middle** $\mu$.   
+
+Why use **Least Squares**? If there was no variation in the data, every value of $Y_i$ was the same, then there would be no 'error' around the mean. Otherwise, our estimate has to balance the fact that our estimate of $\mu$ isn't going to predict every observation perfectly. Minimizing the **MSE** (Mean Squared Error) seems like one reasonable strategy. We could minimize the average absolute deviation between the data $\mu$ (this leads to the median as the estimate instead of the mean). 
+
+**Tweaking the MSE:**  
+```{r}
+mu <- 65
+mse <- mean((galton$child - mu)^2) # calculating the mean squared error
+ggplot(galton, aes(x = child)) + 
+    geom_histogram(fill = "salmon", colour = "black", binwidth=1) + 
+    geom_vline(xintercept = mu, size = 2) + 
+    ggtitle(paste("mu = ", mu, ", MSE = ", round(mse, 2), sep = ""))
+```
 

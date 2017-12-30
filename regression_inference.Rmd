@@ -1,0 +1,52 @@
+---
+title: "Regression - Inference"
+author: "Howard J"
+date: "December 28, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+library(tidyverse)
+```
+
+
+## Regression Inference
+
+### Inference
+$$\frac{\hat \theta - \theta}{\hat \sigma_{\hat \theta}}$$
+where,
+$\hat \theta $: an estimate of interest  
+$\theta$: the estimand of interest  
+$\hat \sigma_{\hat \ theta}$: the standard error of $\hat \theta$  
+
+
+We see that in many cases
+such statistics often have the following properties:
+
+Is normally distributed and has a finite sample Student's T distribution if the  variance is replaced with a sample estimate (under normality assumptions).
+    3. Can be used to test $H_0 : \theta = \theta_0$ versus $H_a : \theta >, <, \neq \theta_0$.
+    4. Can be used to create a confidence interval for $\theta$ via $\hat \theta \pm Q_{1-\alpha/2} \hat \sigma_{\hat \theta}$
+    where $Q_{1-\alpha/2}$ is the relevant quantile from either a normal or T distribution.
+
+
+### Regrssion Model
+*Definition:*  
+$$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$  
+where, $\epsilon_i$ is iid Gaussian errors:  
+$$\epsilon_i \sim N(0, \sigma^2)$$
+$$\hat \beta_0 = \bar Y - \hat \beta_1 \bar X$$
+$$\hat \beta_1 = Cor(Y, X) \frac{Sd(Y)}{Sd(X)}$$
+
+*Assumption:* the true model is known.
+
+
+### Regression Parameters
+**Standard Errors**  
+$$\sigma_{\hat \beta_1}^2 = Var(\hat \beta_1) = \sigma^2 / \sum_{i=1}^n (X_i - \bar X)^2$$
+$$\sigma_{\hat \beta_0}^2 = Var(\hat \beta_0)  = \left(\frac{1}{n} + \frac{\bar X^2}{\sum_{i=1}^n (X_i - \bar X)^2 }\right)\sigma^2$$
+
