@@ -154,6 +154,7 @@ Two types of errors:</p>
 <th>Decide</th>
 <th>Result</th>
 <th>Comments</th>
+<th>Cause</th>
 </tr>
 </thead>
 <tbody>
@@ -161,51 +162,49 @@ Two types of errors:</p>
 <td><span class="math inline">\(H_0\)</span></td>
 <td><span class="math inline">\(H_a\)</span></td>
 <td>Type I error</td>
-<td>low standard, innocent people convicted</td>
+<td>innocent people convicted</td>
+<td>low standard</td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(H_a\)</span></td>
 <td><span class="math inline">\(H_0\)</span></td>
 <td>Type II error</td>
-<td>high standard, guilty people let free</td>
+<td>guilty people let free</td>
+<td>high standard</td>
 </tr>
 </tbody>
 </table>
 <p><span class="math inline">\(\alpha\)</span>: Type I error rate. The Probability of rejecting the null hypothesis when, in fact, the null hypothesis is correct.<br />
 <span class="math inline">\(\beta\)</span>: Type II error rate. The Probability of the failure of rejecting the null hypothesis when, in fact, the null hypothesis is false.</p>
-<p>Hypothesis testing strategy would reject the null hypothesis if <span class="math inline">\(\bar X\)</span> was larger than constant <span class="math inline">\(C\)</span>. Typically, <span class="math inline">\(C\)</span> is chosen so that <span class="math inline">\(\alpha\)</span>, is <span class="math inline">\(.05\)</span> (or some other relevant constant).</p>
+<p>Hypothesis testing strategy would reject the null hypothesis if <span class="math inline">\(\bar X\)</span> was larger than constant <span class="math inline">\(C\)</span>. Typically, <span class="math inline">\(C\)</span> is usually chosen so that <span class="math inline">\(\alpha = 0.05\)</span>.<br />
+Using Z-score, which is how many standard errors the sample mean is above the hypothesized mean:<br />
+<span class="math display">\[\sqrt{n} (\bar X - \mu_0) / s &gt; Z_{1-\alpha}\]</span> where, <span class="math inline">\(C = \mu_0 + Z_{1-\alpha} * {s \over \sqrt{n}}\)</span>, <span class="math inline">\(Z_{1-\alpha}=Z_{0.95}\)</span>, the 95th percentile of a normal distribution is 1.645 standard deviations from the mean.</p>
 <p><em>Example:</em> Assume standard error of the mean <span class="math inline">\(10 / \sqrt{100} = 1\)</span></p>
 <ul>
-<li>Under <span class="math inline">\(H_0\)</span> <span class="math inline">\(\bar X \sim N(30, 1)\)</span></li>
-<li>We want to chose <span class="math inline">\(C\)</span> so that the <span class="math inline">\(P(\bar X &gt; C; H_0)\)</span> is 5%</li>
-<li>The 95th percentile of a normal distribution is 1.645 standard deviations from the mean</li>
-<li>If <span class="math inline">\(C = 30 + 1 \times 1.645 = 31.645\)</span></li>
-<li>Then the probability that a <span class="math inline">\(N(30, 1)\)</span> is larger than it is 5%</li>
-<li>So the rule “Reject <span class="math inline">\(H_0\)</span> when <span class="math inline">\(\bar X \geq 31.645\)</span>” has the property that the probability of rejection is 5% when <span class="math inline">\(H_0\)</span> is true (for the <span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(n\)</span> given)</li>
-</ul>
-</div>
-<div id="discussion" class="section level3">
-<h3>Discussion</h3>
-<ul>
-<li>In general we don’t convert <span class="math inline">\(C\)</span> back to the original scale</li>
-<li>We would just reject because the Z-score; which is how many standard errors the sample mean is above the hypothesized mean <span class="math display">\[
-  \frac{32 - 30}{10 / \sqrt{100}} = 2
-  \]</span> is greater than <span class="math inline">\(1.645\)</span></li>
-<li>Or, whenever <span class="math inline">\(\sqrt{n} (\bar X - \mu_0) / s &gt; Z_{1-\alpha}\)</span></li>
+<li>Under <span class="math inline">\(H_0\)</span> <span class="math inline">\(\bar X \sim N(30, 1)\)</span> according to CTL.<br />
+</li>
+<li>z = <span class="math inline">\(\frac{32 - 30}{10 / \sqrt{100}} = 2\)</span> is greater than <span class="math inline">\(1.645\)</span>.<br />
+</li>
+<li><span class="math inline">\(P(\bar X &gt; C; H_0)=0.05\)</span>, where <span class="math inline">\(C = 30 + 1 \times 1.645 = 31.645\)</span></li>
 </ul>
 </div>
 <div id="general-rules" class="section level3">
 <h3>General rules</h3>
+<p>The general rules for the three most important alternatives:</p>
 <ul>
-<li>The <span class="math inline">\(Z\)</span> test for <span class="math inline">\(H_0:\mu = \mu_0\)</span> versus</li>
-<li><span class="math inline">\(H_1: \mu &lt; \mu_0\)</span></li>
-<li><span class="math inline">\(H_2: \mu \neq \mu_0\)</span></li>
-<li><span class="math inline">\(H_3: \mu &gt; \mu_0\)</span></li>
-<li>Test statistic $ TS =  $</li>
+<li>The <span class="math inline">\(Z\)</span> test for <span class="math inline">\(H_0:\mu = \mu_0\)</span> versus<br />
+</li>
+<li>H_1: <span class="math inline">\(\mu &lt; \mu_0\)</span><br />
+</li>
+<li>H_2: <span class="math inline">\(\mu \neq \mu_0\)</span><br />
+</li>
+<li><p>H_3: <span class="math inline">\(\mu &gt; \mu_0\)</span></p></li>
+<li>Test statistic <span class="math inline">\(TS = \frac{\bar{X} - \mu_0}{S / \sqrt{n}}\)</span><br />
+</li>
 <li>Reject the null hypothesis when</li>
 <li><span class="math inline">\(TS \leq Z_{\alpha} = -Z_{1 - \alpha}\)</span></li>
 <li><span class="math inline">\(|TS| \geq Z_{1 - \alpha / 2}\)</span></li>
-<li><span class="math inline">\(TS \geq Z_{1 - \alpha}\)</span></li>
+<li><p><span class="math inline">\(TS \geq Z_{1 - \alpha}\)</span></p></li>
 </ul>
 </div>
 <div id="notes" class="section level3">
