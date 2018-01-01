@@ -176,83 +176,55 @@ Two types of errors:</p>
 </table>
 <p><span class="math inline">\(\alpha\)</span>: Type I error rate. The Probability of rejecting the null hypothesis when, in fact, the null hypothesis is correct.<br />
 <span class="math inline">\(\beta\)</span>: Type II error rate. The Probability of the failure of rejecting the null hypothesis when, in fact, the null hypothesis is false.</p>
-<p>Hypothesis testing strategy would reject the null hypothesis if <span class="math inline">\(\bar X\)</span> was larger than constant <span class="math inline">\(C\)</span>. Typically, <span class="math inline">\(C\)</span> is usually chosen so that <span class="math inline">\(\alpha = 0.05\)</span>.<br />
-Using Z-score, which is how many standard errors the sample mean is above the hypothesized mean:<br />
-<span class="math display">\[\sqrt{n} (\bar X - \mu_0) / s &gt; Z_{1-\alpha}\]</span> where, <span class="math inline">\(C = \mu_0 + Z_{1-\alpha} * {s \over \sqrt{n}}\)</span>, <span class="math inline">\(Z_{1-\alpha}=Z_{0.95}\)</span>, the 95th percentile of a normal distribution is 1.645 standard deviations from the mean.</p>
+<p>Hypothesis testing strategy would reject the null hypothesis if <span class="math inline">\(\bar X\)</span> was larger than constant <span class="math inline">\(C\)</span>. Typically, <span class="math inline">\(C\)</span> is usually chosen so that <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Using Z-score if the sample size is large enough, which is how many standard errors the sample mean is above the hypothesized mean, the 95th percentile of a normal distribution is 1.645 standard deviations from the mean.</p>
+<p><span class="math display">\[Z_{1-\alpha} = \frac{C - \mu_0}{S / \sqrt{n}}\]</span> Thus, <span class="math inline">\(C = \mu_0 + Z_{1-\alpha} * {s \over \sqrt{n}}\)</span>.</p>
 <p><em>Example:</em> Assume standard error of the mean <span class="math inline">\(10 / \sqrt{100} = 1\)</span></p>
 <ul>
 <li>Under <span class="math inline">\(H_0\)</span> <span class="math inline">\(\bar X \sim N(30, 1)\)</span> according to CTL.<br />
 </li>
 <li>z = <span class="math inline">\(\frac{32 - 30}{10 / \sqrt{100}} = 2\)</span> is greater than <span class="math inline">\(1.645\)</span>.<br />
 </li>
-<li><span class="math inline">\(P(\bar X &gt; C; H_0)=0.05\)</span>, where <span class="math inline">\(C = 30 + 1 \times 1.645 = 31.645\)</span></li>
+<li><span class="math inline">\(P(\bar X &gt; C; H_0)=0.05\)</span>; <span class="math inline">\(C = 30 + 1 \times 1.645 = 31.645\)</span></li>
 </ul>
 </div>
 <div id="general-rules" class="section level3">
 <h3>General rules</h3>
-<p>The general rules for the three most important alternatives:</p>
-<ul>
-<li>The <span class="math inline">\(Z\)</span> test for <span class="math inline">\(H_0:\mu = \mu_0\)</span> versus<br />
-</li>
-<li>H_1: <span class="math inline">\(\mu &lt; \mu_0\)</span><br />
-</li>
-<li>H_2: <span class="math inline">\(\mu \neq \mu_0\)</span><br />
-</li>
-<li><p>H_3: <span class="math inline">\(\mu &gt; \mu_0\)</span></p></li>
-<li>Test statistic <span class="math inline">\(TS = \frac{\bar{X} - \mu_0}{S / \sqrt{n}}\)</span><br />
-</li>
-<li>Reject the null hypothesis when</li>
-<li><span class="math inline">\(TS \leq Z_{\alpha} = -Z_{1 - \alpha}\)</span></li>
-<li><span class="math inline">\(|TS| \geq Z_{1 - \alpha / 2}\)</span></li>
-<li><p><span class="math inline">\(TS \geq Z_{1 - \alpha}\)</span></p></li>
-</ul>
+<p>The general rules for the three most important alternatives; the <span class="math inline">\(Z\)</span> test for <span class="math inline">\(H_0:\mu = \mu_0\)</span> versus<br />
+- H_1: <span class="math inline">\(\mu &lt; \mu_0\)</span><br />
+- H_2: <span class="math inline">\(\mu \neq \mu_0\)</span><br />
+- H_3: <span class="math inline">\(\mu &gt; \mu_0\)</span></p>
+<p><em>TS</em> (Test statistic):<br />
+<span class="math display">\[TS = \frac{\bar{X} - \mu_0}{S / \sqrt{n}}\]</span></p>
+<p>Reject the null hypothesis for the three alternatives when:<br />
+* <span class="math inline">\(TS \leq Z_{\alpha} = -Z_{1 - \alpha}\)</span> * <span class="math inline">\(|TS| \geq Z_{1 - \alpha / 2}\)</span> * <span class="math inline">\(TS \geq Z_{1 - \alpha}\)</span></p>
 </div>
 <div id="notes" class="section level3">
 <h3>Notes</h3>
 <ul>
-<li>We have fixed <span class="math inline">\(\alpha\)</span> to be low, so if we reject <span class="math inline">\(H_0\)</span> (either our model is wrong) or there is a low probability that we have made an error</li>
-<li>We have not fixed the probability of a type II error, <span class="math inline">\(\beta\)</span>; therefore we tend to say Fail to reject <span class="math inline">\(H_0\)</span> rather than accepting <span class="math inline">\(H_0\)</span></li>
-<li>Statistical significance is no the same as scientific significance</li>
-<li>The region of TS values for which you reject <span class="math inline">\(H_0\)</span> is called the rejection region</li>
-</ul>
-</div>
-<div id="more-notes" class="section level3">
-<h3>More notes</h3>
-<ul>
-<li>The <span class="math inline">\(Z\)</span> test requires the assumptions of the CLT and for <span class="math inline">\(n\)</span> to be large enough for it to apply</li>
-<li>If <span class="math inline">\(n\)</span> is small, then a Gossett’s <span class="math inline">\(T\)</span> test is performed exactly in the same way, with the normal quantiles replaced by the appropriate Student’s <span class="math inline">\(T\)</span> quantiles and <span class="math inline">\(n-1\)</span> df</li>
-<li>The probability of rejecting the null hypothesis when it is false is called <em>power</em></li>
+<li>We have not fixed the probability of a type II error, <span class="math inline">\(\beta\)</span>; therefore we tend to say Fail to reject <span class="math inline">\(H_0\)</span> rather than accepting <span class="math inline">\(H_0\)</span>.<br />
+</li>
+<li>Statistical significance is no the same as scientific significance.<br />
+</li>
+<li>The region of <em>TS</em> values for which you reject <span class="math inline">\(H_0\)</span> is called the <strong>rejection region</strong>.<br />
+</li>
+<li>The probability of rejecting the null hypothesis when it is false is called <strong>power</strong></li>
 <li>Power is a used a lot to calculate sample sizes for experiments</li>
 </ul>
 </div>
-<div id="example-reconsidered" class="section level3">
-<h3>Example reconsidered</h3>
-<ul>
-<li>Consider our example again. Suppose that <span class="math inline">\(n= 16\)</span> (rather than <span class="math inline">\(100\)</span>)</li>
-<li>The statistic <span class="math display">\[
-\frac{\bar X - 30}{s / \sqrt{16}}
-\]</span> follows a <span class="math inline">\(T\)</span> distribution with 15 df under <span class="math inline">\(H_0\)</span></li>
-<li>Under <span class="math inline">\(H_0\)</span>, the probability that it is larger that the 95th percentile of the <span class="math inline">\(T\)</span> distribution is 5%</li>
-<li>The 95th percentile of the T distribution with 15 df is 1.7530504 (obtained via <code>qt(.95, 15)</code>)</li>
-<li>So that our test statistic is now $(32 - 30) / 10 = 0.8 $</li>
-<li>We now fail to reject.</li>
-</ul>
+<div id="t-test" class="section level3">
+<h3>T test</h3>
+<p>The <span class="math inline">\(Z\)</span> test requires the assumptions of the CLT and for <span class="math inline">\(n\)</span> to be large enough for it to apply. If <span class="math inline">\(n\)</span> is small, then a Gossett’s <span class="math inline">\(T\)</span> test is performed exactly in the same way, with the normal quantiles replaced by the appropriate Student’s <span class="math inline">\(T\)</span> quantiles and <span class="math inline">\(n-1\)</span> df.</p>
+<p><em>Example:</em> suppose that <span class="math inline">\(n=16\)</span> (rather than <span class="math inline">\(100\)</span>). The statistic:<br />
+<span class="math display">\[\frac{\bar X - 30}{s / \sqrt{16}}\]</span><br />
+follows a <span class="math inline">\(T\)</span> distribution with 15 df under <span class="math inline">\(H_0\)</span>.</p>
+<p>Under <span class="math inline">\(H_0\)</span>, the probability that it is larger that the 95th percentile of the <span class="math inline">\(T\)</span> distribution is 5%. The 95th percentile of the T distribution with 15 df is <code>qt(.95, 15)</code>, calculated as 1.7530504. So that our test statistic is now <span class="math inline">\(\sqrt{16}(32 - 30) / 10 = 0.8\)</span>, which is smaller than 1.7530504. Fail to reject <span class="math inline">\(H_0\)</span>.</p>
 </div>
 <div id="two-sided-tests" class="section level3">
 <h3>Two sided tests</h3>
-<ul>
-<li>Suppose that we would reject the null hypothesis if in fact the mean was too large or too small</li>
-<li>That is, we want to test the alternative <span class="math inline">\(H_a : \mu \neq 30\)</span></li>
-<li>We will reject if the test statistic, <span class="math inline">\(0.8\)</span>, is either too large or too small</li>
-<li>Then we want the probability of rejecting under the null to be 5%, split equally as 2.5% in the upper tail and 2.5% in the lower tail</li>
-<li>Thus we reject if our test statistic is larger than <code>qt(.975, 15)</code> or smaller than <code>qt(.025, 15)</code></li>
-<li>This is the same as saying: reject if the absolute value of our statistic is larger than <code>qt(0.975, 15)</code> = 2.1314495</li>
-<li>So we fail to reject the two sided test as well</li>
-<li>(If you fail to reject the one sided test, you know that you will fail to reject the two sided)</li>
-</ul>
-</div>
-<div id="t-test-in-r" class="section level3">
-<h3>T test in R</h3>
+<p>Suppose that we would reject the null hypothesis <span class="math inline">\(H_0\)</span> if in fact the mean was too large or too small. That is, we want to test the alternative <span class="math inline">\(H_a : \mu \neq 30\)</span>. We want the probability of rejecting under the null to be 5%, split equally as 2.5% in the upper tail and 2.5% in the lower tail.</p>
+<p>Thus we reject if our test statistic is larger than <code>qt(.975, 15)</code> or smaller than <code>qt(.025, 15)</code>. This is the same as saying: reject if the absolute value of our statistic is larger than <code>qt(0.975, 15)</code> = 2.1314495. So we fail to reject the two sided test as well, since test statistic, 0.8 &lt; 2.1314495 as in our example. (If you fail to reject the one sided test, you know that you will fail to reject the two sided)</p>
+<p><em>Example:</em></p>
 <pre class="r"><code>data(father.son)
 str(father.son)</code></pre>
 <pre><code>## 'data.frame':    1078 obs. of  2 variables:

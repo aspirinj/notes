@@ -78,48 +78,28 @@ Reject the null hypothesis for the three alternatives when:
 * We have not fixed the probability of a type II error, $\beta$; therefore we tend to say Fail to reject $H_0$ rather than accepting $H_0$.  
 * Statistical significance is no the same as scientific significance.  
 * The region of *TS* values for which you reject $H_0$ is called the **rejection region**.  
-* The $Z$ test requires the assumptions of the CLT and for $n$ to be large enough
-  for it to apply
-* If $n$ is small, then a Gossett's $T$ test is performed exactly in the same way,
-  with the normal quantiles replaced by the appropriate Student's $T$ quantiles and
-  $n-1$ df
-* The probability of rejecting the null hypothesis when it is false is called *power*
+* The probability of rejecting the null hypothesis when it is false is called **power**
 * Power is a used a lot to calculate sample sizes for experiments
 
 
-### Example reconsidered
-- Consider our example again. Suppose that $n= 16$ (rather than
-$100$)
-- The statistic
-$$
-\frac{\bar X - 30}{s / \sqrt{16}}
-$$
-follows a $T$ distribution with 15 df under $H_0$
-- Under $H_0$, the probability that it is larger
-that the 95th percentile of the $T$ distribution is 5%
-- The 95th percentile of the T distribution with 15
-df is `r qt(.95, 15)` (obtained via `qt(.95, 15)`)
-- So that our test statistic is now $\sqrt{16}(32 - 30) / 10 = 0.8 $
-- We now fail to reject.
+
+### T test
+The $Z$ test requires the assumptions of the CLT and for $n$ to be large enough for it to apply. If $n$ is small, then a Gossett's $T$ test is performed exactly in the same way, with the normal quantiles replaced by the appropriate Student's $T$ quantiles and $n-1$ df.  
+
+*Example:* suppose that $n=16$ (rather than $100$). The t statistic:    
+$$\frac{\bar X - 30}{s / \sqrt{16}}$$  
+follows a $T$ distribution with 15 df under $H_0$.  
+
+Under $H_0$, the probability that it is larger that the 95th percentile of the $T$ distribution is 5%. The 95th percentile of the T distribution with 15 df is `qt(.95, 15)`, calculated as `r qt(.95, 15)`. So that our test statistic is now $\sqrt{16}(32 - 30) / 10 = 0.8$, which is smaller than `r qt(.95, 15)`. Fail to reject $H_0$.  
 
 
 ### Two sided tests
-* Suppose that we would reject the null hypothesis if in fact the  mean was too large or too small
-* That is, we want to test the alternative $H_a : \mu \neq 30$
-* We will reject if the test statistic, $0.8$, is either too large or too small
-* Then we want the probability of rejecting under the
-null to be 5%, split equally as 2.5% in the upper
-tail and 2.5% in the lower tail
-* Thus we reject if our test statistic is larger
-than `qt(.975, 15)` or smaller than `qt(.025, 15)`
-  * This is the same as saying: reject if the
-  absolute value of our statistic is larger than
-  `qt(0.975, 15)` = `r qt(0.975, 15)`
-  * So we fail to reject the two sided test as well
-  * (If you fail to reject the one sided test, you
-  know that you will fail to reject the two sided)
+Suppose that we would reject the null hypothesis $H_0$ if in fact the mean was too large or too small. That is, we want to test the alternative $H_a : \mu \neq 30$. We want the probability of rejecting under the null to be 5%, split equally as 2.5% in the upper tail and 2.5% in the lower tail.  
 
-### T test in R
+Thus we reject if our test statistic is larger than `qt(.975, 15)` or smaller than `qt(.025, 15)`. This is the same as saying: reject if the absolute value of our statistic is larger than `qt(0.975, 15)` = `r qt(0.975, 15)`. So we fail to reject the two sided test as well, since test statistic, 0.8 < `r qt(0.975, 15)` as in our example. (If you fail to reject the one sided test, you know that you will fail to reject the two sided)
+
+
+*Example:* the observations are paired. To test whether the difference in the heights is zero or non-zero.    
 ```{r}
 data(father.son)
 str(father.son)
