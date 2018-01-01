@@ -31,7 +31,7 @@ This data was created by Francis Galton in 1885. Galton was a statistician who i
 
 Let's look at the marginal (parents disregarding children and children disregarding parents) distributions first. The parental distribution is all heterosexual couples. The parental average was corrected for gender via multiplying female heights by 1.08. Remember, Galton didn't have regression to help figure out a better way to do this correction!
 
-```{r}
+```{r galton}
 data(galton)
 str(galton)
 ```
@@ -91,18 +91,121 @@ ggplot(galton, aes(x = child)) +
 ```
 
 
-Size of point represents number of points at that (X, Y) combination (See the Rmd file for the code).
+### Plot Galton data
+Notice that the overplotting is hiding a lot of info.  
+```{r, dependson="galton",fig.height=4,fig.width=4, fig.align='center'}
+ggplot(galton, aes(x = parent, y = child)) + geom_point()
+```
 
-```{r freqGalton, fig.height=6, fig.width=6}
+Use the size of points to represent the count of points at that (X, Y) combination.  
+```{r Galton, fig.height=6, fig.width=6}
 freqData <- as.data.frame(table(galton$child, galton$parent)) # Make the contingency table a long data frame
 names(freqData) <- c("child", "parent", "freq")
 freqData$child <- as.numeric(as.character(freqData$child))
 freqData$parent <- as.numeric(as.character(freqData$parent))
-g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
-g <- g  + scale_size(range = c(2, 20), guide = "none" )
-g <- g + geom_point(colour="grey50", aes(size = freq+20))
-g <- g + geom_point(aes(colour=freq, size = freq))
-g <- g + scale_colour_gradient(low = "lightblue", high="white")                    
-g
+ggplot(filter(freqData, freq > 0), aes(x = parent, y = child)) + 
+  scale_size(range = c(2, 20), guide = "none" ) + 
+  geom_point(colour="grey50", aes(size = freq+5)) + 
+  geom_point(aes(colour=freq, size = freq)) + 
+  scale_colour_gradient(low = "lightblue", high="white")
 ```
 
+
+### Regression through the origin
+$X_i$ are the parents' heights; $Y_i$ are the children's heights; $\beta$ is the slope that minimizes $\sum_{i=1}^n (Y_i - X_i \beta)^2$.  
+Shift and center the data to the mean. Assume $\beta=1$ and calculate MSE.  
+
+```{r}
+y <- galton$child - mean(galton$child)
+x <- galton$parent - mean(galton$parent)
+freqData <- as.data.frame(table(x, y))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+
+beta = 1
+mse <- mean( (y - beta * x) ^2 )
+
+ggplot(filter(freqData, freq > 0), aes(x = parent, y = child)) + 
+  scale_size(range = c(2, 20), guide = "none" ) + 
+  geom_point(colour="grey50", aes(size = freq+5)) + 
+  geom_point(aes(colour=freq, size = freq)) + 
+  scale_colour_gradient(low = "lightblue", high="white") + 
+  geom_abline(intercept = 0, slope = beta, size = 1) + 
+  ggtitle(paste("beta = ", beta, "mse = ", round(mse, 3)))
+```
+
+
+Calculation of the centered data:  
+```{r}
+lm(I(child - mean(child))~ I(parent - mean(parent)) - 1, data = galton)
+```
+
+---
+```{r, fig.height=6,fig.width=7}
+freqData <- as.data.frame(table(galton$child, galton$parent)) # Make the contingency table a long data frame
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+
+lm1 <- lm(galton$child ~ galton$parent)
+beta = coef(lm1)[2]
+mse <- mean( (y - beta * x) ^2 )
+
+ggplot(filter(freqData, freq > 0), aes(x = parent, y = child)) + 
+  scale_size(range = c(2, 20), guide = "none" ) + 
+  geom_point(colour="grey50", aes(size = freq+5)) + 
+  geom_point(aes(colour=freq, size = freq)) + 
+  scale_colour_gradient(low = "lightblue", high="white") + 
+  geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], size = 1) + 
+  ggtitle(paste("beta = ", round(beta,3), "mse = ", round(mse, 3)))
+
+```
+
+
+## Notation
+### Data
+*Alphabetical letters:*  
+$X_1, X_2, \ldots, X_n$, $Y_1, \ldots , Y_n$: *n* data points.  
+*Example:* the data set $\{1, 2, 5\}$: $X_1 = 1$, $X_2 = 2$, $X_3 = 5$ and $n = 3$.  
+
+*Greek letters:*  
+Use Greek letters for things we don't know.  
+*Example:* $\mu$ is a mean to estimate.  
+
+### Emperical values
+Emperical values = Sample values
+
+#### The empirical mean 
+$$\bar X = \frac{1}{n}\sum_{i=1}^n X_i$$  
+
+*Notice:* "centering" the random variables:   
+$$\tilde X_i = X_i - \bar X$$
+Where the mean of the $\tilde X_i$ is 0.  
+
+The sample average $\bar X$ is the least squares estimate for $\mu$. For the least squares solution for minimizing:  
+$$\sum_{i=1}^n (X_i - \mu)^2$$  
+It can be centered and rewritten as:  
+$$\sum_{i=1}^n (\tilde X_i)^2$$  
+
+
+#### The emprical standard deviation and variance
+Empirical variance:  
+$$S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar X)^2 = \frac{1}{n-1} \left( \sum_{i=1}^n X_i^2 - n \bar X ^ 2 \right)$$  
+
+* The empirical standard deviation is defined as
+$S = \sqrt{S^2}$. Notice that the standard deviation has the same units as the data.
+* The data defined by $X_i / s$ have empirical standard deviation 1. This is called "scaling" the data.
+
+---
+## Normalization
+
+* The data defined by
+$$
+Z_i = \frac{X_i - \bar X}{s}
+$$
+have empirical mean zero and empirical standard deviation 1. 
+* The process of centering then scaling the data is called "normalizing" the data. 
+* Normalized data are centered at 0 and have units equal to standard deviations of the original data. 
+* Example, a value of 2 from normalized data means that data point
+was two standard deviations larger than the mean.
