@@ -1,0 +1,34 @@
+---
+title: "Inference09 - Hypothesis"
+author: "Howard J, based on the work of Caffo"
+date: "December 10, 2017"
+output: html_document
+---
+
+## Tidyr
+
+### spread
+* Dealing with duplicate rows:  
+
+Since *Tidyr* is only for reshaping data, unlike *reshape2*, which aggregated and reshaped. You need to perform the aggregation before you change the data form.  
+```r
+mydf %>% 
+  group_by(Weight, Height, Fitted, interval, limit) %>% 
+  summarise(value = mean(value)) %>% 
+  spread(limit, value)
+```
+
+* Dealing with missing rows:
+Since *Tidyr* is only for reshaping data, we need to use `complete` to fill in missing rows. Compare `tidyr::spread` with `reshape2::dcast` below.  
+```{r}
+require(reshape2)
+require(tidyr)
+data("ChickWeight")
+wideCW <- dcast(ChickWeight, Diet + Chick ~ Time, value.var = "weight")
+
+wideCW1 <- ChickWeight %>% 
+  complete(Time) %>% 
+  spread(key=Time, value=weight, convert = TRUE)
+```
+
+
