@@ -9,13 +9,40 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ### Basic Regression
+#### `lm()` description
+`lm()`: fitting linear models, returns an object of class "lm" or for multiple responses of class c("mlm", "lm").  
+
+The functions `summary()` and `anova()` are used to obtain and print a summary and analysis of variance table of the results. The generic accessor functions coefficients, effects, fitted.values and residuals extract various useful features of the value returned by lm.
+
+`r lm()$coefficients`: only provides intercept and coefficient. 
+`r summary(lm())$coefficients`: intercept and coefficient, Estimate, Std. Error, t value, Pr(>|t|)
+
+#### predict example
+Without 'newdata' data frame, the fitted values are used.
+```{r}
+x <- rnorm(15)
+y <- x + rnorm(15)
+predict(lm(y ~ x))
+```
+
+```{r}
+new <- data.frame(x = seq(-3, 3, 0.5))
+predict(lm(y ~ x), new, se.fit = TRUE)
+pred.w.plim <- predict(lm(y ~ x), new, interval = "prediction")
+pred.w.clim <- predict(lm(y ~ x), new, interval = "confidence")
+matplot(new$x, cbind(pred.w.clim, pred.w.plim[,-1]),
+        lty = c(1,2,2,3,3), type = "l", ylab = "predicted y")
+```
+
+
+
+
 #### Calculation of Coefficients $\beta_i$
 ```{r}
 x <- c(0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.20,0.21,0.23)
 y <- c(42.0,43.5,45.0,45.5,45.0,47.5,49.0,53.0,50.0,55.0,55.0,60.0)
-lm.sol <- lm(y ~ 1+x)
+lm.sol <- lm(y ~ 1 + x)
 summary(lm.sol)
 ```
 
@@ -48,35 +75,121 @@ toothpaste <- data.frame(
          7.89,8.15,9.10,8.86,8.90,8.87,9.26,9.00,8.75,7.95,
          7.65,7.27,8.00,8.50,8.75,9.21,8.27,7.67,7.93,9.26)
 )
+df <- toothpaste
+```
+
+```{r}
+lm.sol <- lm(df$Y ~ df$X1 + df$X2)
+summary(lm.sol)
+```
+
+```{r}
+plot(df$Y ~ df$X1)
+abline(lm(df$Y ~ df$X1))
+```
+
+
+```{r}
+Y <- df$Y
+X2 <- df$X2
+lm2.sol <- lm(Y ~ X2 + I(X2^2))
+
+x <- seq(min(X2), max(X2), len=200)
+y <- predict(lm2.sol, data.frame(X2=x))
+plot(Y ~ X2)
+lines(x,y)
+```
+
+```{r}
+lm.new <- update(lm.sol, . ~ .+I(df$X2^2))
+summary(lm.new)
+beta.int(lm.new)
+```
+
+
+```{r}
+lm2.new <- update(lm.new, . ~ .-df$X2)
+summary(lm2.new)
+```
+
+```{r}
+lm3.new <- update(lm.new, . ~ .+df$X1*df$X2)
+summary(lm3.new)
+```
+
+
+### Cement
+```{r}
+cement <- data.frame(
+   X1 = c( 7,  1, 11, 11,  7, 11,  3,  1,  2, 21,  1, 11, 10),
+   X2 = c(26, 29, 56, 31, 52, 55, 71, 31, 54, 47, 40, 66, 68),
+   X3 = c( 6, 15,  8,  8,  6,  9, 17, 22, 18,  4, 23,  9,  8),
+   X4 = c(60, 52, 20, 47, 33, 22,  6, 44, 22, 26, 34, 12, 12),
+   Y  = c(78.5, 74.3, 104.3,  87.6,  95.9, 109.2, 102.7, 72.5, 
+        93.1,115.9,  83.8, 113.3, 109.4)
+)
 
 ```
 
 ```{r}
-attach(toothpaste)
-
-lm.sol <- lm(Y ~ X1+X2)
+lm.sol <- lm(Y ~ X1+X2+X3+X4, data = cement)
 summary(lm.sol)
-plot(Y ~ X1)
-abline(lm(Y ~ X1))
+```
 
-lm2.sol <- lm(Y ~ X2+I(X2^2))
-x <- seq(min(X2), max(X2), len=200)
-y <- predict(lm2.sol, data.frame(X2=x))
-plot(Y ~ X2); lines(x,y)
+```{r}
+lm.step <- step(lm.sol)
+```
 
-lm.new <- update(lm.sol, . ~ .+I(X2^2))
-summary(lm.new)
-beta.int(lm.new)
+```{r}
+lm.step$anova
+```
 
-lm2.new <- update(lm.new, . ~ .-X2)
-summary(lm2.new)
+```{r}
+summary(lm.step)
+```
 
-lm3.new <- update(lm.new, . ~ .+X1*X2)
-summary(lm3.new)
-detach(toothpaste)
+
+```{r}
+drop1(lm.step)
 ```
 
 
 
 
+### Troubleshooting
+#### lm()
+Getting Warning: “ 'newdata' had X row but variables found have Y rows” on predict.  
 
+This is a problem of using different names between your data and your newdata and not a problem between using vectors or dataframes.
+
+When you fit a model with the `lm` function and then use `predict` to make predictions, predict tries to find the same names on your newdata. In your first case name x conflicts with mtcars$wt and hence you get the warning.
+
+```r
+a <- mtcars$mpg
+x <- mtcars$wt
+#here you use x as a name
+fitCar <- lm(a ~ x) 
+#here you use x again as a name in newdata.
+predict(fitCar, data.frame(x = mean(x)), interval = "confidence") 
+```
+       fit      lwr      upr
+1 20.09062 18.99098 21.19027
+
+See that in this case you fit your model using the name x and also predict using the name x in your newdata. This way you get no warnings and it is what you expect.
+
+
+Let's see what happens when I change the name to something else when I fit the model:  
+```r
+a <- mtcars$mpg
+b <- mtcars$wt  # <- name it b this time 
+fitCar <- lm(a ~ b) 
+predict(fitCar, data.frame(x = mean(x)), interval = "confidence")  # here I am using name x as previously
+```
+         fit       lwr      upr
+1  23.282611 21.988668 24.57655
+2  21.919770 20.752751 23.08679
+3  24.885952 23.383008 26.38890
+4  20.102650 19.003004 21.20230
+5  18.900144 17.771469 20.02882
+Warning message:
+'newdata' had 1 row but variables found have 32 rows 
