@@ -1,0 +1,32 @@
+---
+title: "test"
+author: "Howard J"
+date: "January 6, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Import
+```{r}
+require(tidyverse)
+```
+
+### Read
+```{r}
+fruits = read.delim('fruit_data_with_colors.txt', seq="\t", header = TRUE)
+```
+
+### Display
+```{r}
+head(fruits)
+```
+
+
+```{r}
+distinct(fruits,fruit_name)
+```
+
