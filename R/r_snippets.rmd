@@ -1,0 +1,98 @@
+---
+title: "Inference09 - Hypothesis"
+author: "Howard J, based on the work of Caffo"
+date: "December 10, 2017"
+output: html_document
+---
+
+## Tidyr
+
+### spread
+* Dealing with duplicate rows:  
+
+Since *Tidyr* is only for reshaping data, unlike *reshape2*, which aggregated and reshaped. You need to perform the aggregation before you change the data form.  
+```r
+mydf %>% 
+  group_by(Weight, Height, Fitted, interval, limit) %>% 
+  summarise(value = mean(value)) %>% 
+  spread(limit, value)
+```
+
+* Dealing with missing rows:
+Since *Tidyr* is only for reshaping data, we need to use `complete` to fill in missing rows. Compare `tidyr::spread` with `reshape2::dcast` below.  
+```{r}
+require(reshape2)
+require(tidyr)
+data("ChickWeight")
+wideCW <- dcast(ChickWeight, Diet + Chick ~ Time, value.var = "weight")
+
+wideCW1 <- ChickWeight %>% 
+  complete(Time) %>% 
+  spread(key=Time, value=weight, convert = TRUE)
+```
+
+
+
+## Regression
+
+### The I() function in lm(): 
+I isolates or insulates the contents of I( ... ) from the gaze of R's formula parsing code. It allows the standard R operators to work as they would if you used them outside of a formula, rather than being treated as special formula operators.  
+
+For example:  
+```r
+y ~ x + x^2
+`
+would, to R, mean "give me":
+x = the main effect of x, and
+x^2 = the main effect and the second order interaction of x,
+not the intended x plus x-squared:
+
+```r
+model.frame( y ~ x + x^2, data = data.frame(x = rnorm(5), y = rnorm(5)))
+           y           x
+1 -1.4355144 -1.85374045
+2  0.3620872 -0.07794607
+3 -1.7590868  0.96856634
+4 -0.3245440  0.18492596
+5 -0.6515630 -1.37994358
+```
+
+This is because ^ is a special operator in a formula, as described in formula(). You end up only including x in the model frame because the main effect of x is already included from the x term in the formula, and there is nothing to cross x with to get the second-order interactions in the x^2 term.
+
+To get the usual operator, you need to use I() to isolate the call from the formula code:
+
+```r
+model.frame( y ~ x + I(x^2), data = data.frame(x = rnorm(5), y = rnorm(5)))
+            y          x       I(x^2)
+1 -0.02881534  1.0865514 1.180593....
+2  0.23252515 -0.7625449 0.581474....
+3 -0.30120868 -0.8286625 0.686681....
+4 -0.67761458  0.8344739 0.696346....
+5  0.65522764 -0.9676520 0.936350....
+(that last column is correct, it just looks odd because it is of class AsIs.)
+```
+
+In your example, - when used in a formula would indicate removal of a term from the model, where you wanted - to have it's usual binary operator meaning of subtraction:
+
+```r
+model.frame( y ~ x - mean(x), data = data.frame(x = rnorm(5), y = rnorm(5)))
+Error in model.frame.default(y ~ x - mean(x), data = data.frame(x = rnorm(5),  : 
+  variable lengths differ (found for 'mean(x)')
+```
+This fails for reason that mean(x) is a length 1 vector and model.frame() quite rightly tells you this doesn't match the length of the other variables. A way round this is I():
+
+```r
+model.frame( y ~ I(x - mean(x)), data = data.frame(x = rnorm(5), y = rnorm(5)))
+           y I(x - mean(x))
+1  1.1727063   1.142200....
+2 -1.4798270   -0.66914....
+3 -0.4303878   -0.28716....
+4 -1.0516386   0.542774....
+5  1.5225863   -0.72865....
+```
+Hence, where you want to use an operator that has special meaning in a formula, but you need its non-formula meaning, you need to wrap the elements of the operation in I( ).
+
+Read ?formula for more on the special operators, and ?I for more details on the function itself and its other main use-case within data frames (which is where the AsIs bit originates from, if you are interested).
+
+
+

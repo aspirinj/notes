@@ -48,7 +48,7 @@ Hypothesis testing strategy would reject the null hypothesis if $\bar X$ was lar
 Using Z-score if the sample size is large enough, which is how many standard errors the sample mean is above the hypothesized mean, the 95th percentile of a normal distribution is 1.645 standard deviations from the mean.
 
 $$Z_{1-\alpha} = \frac{C - \mu_0}{S / \sqrt{n}}$$
-Thus, $C = \mu_0 + Z_{1-\alpha} * {s \over \sqrt{n}}$.
+Thus, $C = \mu_0 + Z_{1-\alpha} {s \over \sqrt{n}}$.
 
 
 *Example:* Assume standard error of the mean $10 / \sqrt{100} = 1$
@@ -113,28 +113,25 @@ t.test(father.son$sheight - father.son$fheight) # Inputs for T test: numeric arr
   contains $\mu_0$, then we *fail  to* reject $H_0$
 
 ### Two group intervals
-- First, now you know how to do two group T tests
-since we already covered indepedent group T intervals
-- Rejection rules are the same
-- Test $H_0 : \mu_1 = \mu_2$
-- Let's just go through an example
+* Rejection rules are the same
+* Test $H_0 : \mu_1 = \mu_2$
 
-### `chickWeight` data
-Recall that we reformatted this data
-```{r, echo=TRUE,results='hide'}
-library(datasets); data(ChickWeight); library(reshape2)
-##define weight gain or loss
-wideCW <- dcast(ChickWeight, Diet + Chick ~ Time, value.var = "weight")
+*Example:* `chickWeight` data
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library(datasets)
+data(ChickWeight)
+
+
+wideCW <- ChickWeight %>% 
+  complete(Time) %>% 
+  spread(key=Time, value=weight, convert = TRUE)
+
 names(wideCW)[-(1 : 2)] <- paste("time", names(wideCW)[-(1 : 2)], sep = "")
-library(dplyr)
-wideCW <- mutate(wideCW,
-  gain = time21 - time0
-)
+wideCW <- mutate(wideCW, gain = time21 - time0) # define weight gain or loss
 ```
 
----
-### Unequal variance T test comparing diets 1 and 4
-```{r,echo=TRUE, comment="> ", results='markup'}
+#### Unequal variance T test comparing diets 1 and 4
+```{r,echo=TRUE, comment="> "}
 wideCW14 <- subset(wideCW, Diet %in% c(1, 4))
 t.test(gain ~ Diet, paired = FALSE,
        var.equal = TRUE, data = wideCW14)
@@ -155,7 +152,7 @@ Rejection region | Type I error rate |
 [8 : 8] | `r pbinom( 7, size = 8, p = .5, lower.tail = FALSE)`
 
 ---
-## Notes
+### Notes
 * It's impossible to get an exact 5% level test for this case due to the discreteness of the binomial.
   * The closest is the rejection region [7 : 8]
   * Any alpha level lower than `r 1 / 2 ^8` is not attainable.
