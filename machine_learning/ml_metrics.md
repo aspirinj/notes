@@ -1,14 +1,14 @@
 
 
 ## Confusion Matrix
-| test negative | test positive |
+| predicted negative | predicted positive |
 | ---  | --- |
 | TN | FP |
 | FN | TP |
 
 Horizontally:  
-*TNR:* specificity  
-*TPR:* recall  
+*TNR:* specificity,   
+*TPR:* recall, TP / (TP + FN)  
 *FPR = 1 - TNR*
 
 
